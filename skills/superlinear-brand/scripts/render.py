@@ -5,7 +5,9 @@ Two modes:
 
   render.py page <file.html> [<file.html> ...] [--out-dir DIR] [--size 1920x1080] [--scale 1] [--final]
       Static promo / cover / OG pages, opened over file://. The canvas size comes from --size, or from
-      <meta name="sa:canvas" content="2100x750"> in the page. Writes <name>.png (next to the page by default).
+      <meta name="sa:canvas" content="2100x750"> in the page; the safe area from <meta name="sa:safe"
+      content="L,T,R,B">. Both are read from the DOM; an sa: meta that cannot be parsed is reported as a problem.
+      Writes <name>.png (next to the page unless --out-dir).
 
   render.py deck <deck_dir> [--root DIR] [--out DIR] [--sheet FILE] [--all-steps] [--final]
       A presentation-skill HTML canvas deck (window.DECK + window.deckGoto). Serves --root (default: the deck
@@ -27,7 +29,11 @@ Problems (any one gives exit code 1):
   svg_text_overflow                 SVG <text> whose centre sits in a <rect> is not fully inside that rect
   svg_text_overlap                  two SVG <text> boxes overlap
   unprocessed_markup                "==" emphasis markers are visible (typeset.js not loaded, or inside .type)
-  placeholders                      .sa-placeholder elements (a problem only with --final; else a warning)
+  placeholders                      draft content: .sa-placeholder elements, <img> from a placeholders/ folder, and
+                                    visible stand-in text (Speaker Name, Month DD, 讲者姓名, 某月某日).
+                                    A problem only with --final; otherwise a warning
+  meta                              an sa:canvas / sa:safe meta that cannot be parsed
+  slide_table                       (deck) a slide whose steps or print value is out of range
   missing_slots                     (deck) a presentation-skill copy slot was not filled
 Warnings (reported, exit code unaffected):
   straight_quotes                   ' or " in visible text (load theme/typeset.js, or use ’ “ ”)
@@ -37,7 +43,12 @@ Warnings (reported, exit code unaffected):
   placeholders                      without --final
 
 Mark an element (or an SVG group) data-audit-skip to exempt it and its subtree from the SVG checks.
-Captures hide the presentation skill's navigator button and show every <video> at its poster.
+Captures hide the presentation skill's navigator button and show every <video> at its poster. Requests to any
+non-local origin are recorded as external_requests and aborted, so nothing leaves the machine during a render.
+HTTP responses >= 400 are recorded under failed_requests.
+
+Exit codes: 0 = clean, 1 = audit problems, 2 = the render itself could not run (missing page, deck directory
+outside --root, no index.html, not a canvas deck, browser failed to launch). Exit 2 prints {"error": "..."}.
 
 Requires: playwright (with a Chromium build: `python -m playwright install chromium`) and Pillow.
 """
@@ -60,12 +71,12 @@ CAPTURE_CSS = ("*, *::before, *::after { transition: none !important; animation:
 POSTER_JS = """() => { document.querySelectorAll('video').forEach(v => { try { v.pause(); v.removeAttribute('autoplay'); v.load(); } catch (e) {} }); }"""
 
 AUDIT_JS = r"""
-([scopeSel, W, H, safe]) => {
+([scopeId, W, H, safe]) => {
   const out = { offcanvas: [], unsafe: [], wrapped: [], number_unit_break: [], images: [], cropped: [],
                 svg_text_outside: [], svg_text_overflow: [], svg_text_overlap: [], unprocessed_markup: [], placeholders: [],
                 straight_quotes: [], number_unit_space: [], scaffold_class: [] };
-  const scope = scopeSel ? document.querySelector(scopeSel) : document.body;
-  if (!scope) { out.offcanvas.push("scope not found: " + scopeSel); return out; }
+  const scope = scopeId ? document.getElementById(scopeId) : document.body;
+  if (!scope) { out.offcanvas.push("frame not found: #" + scopeId); return out; }
   const tol = 1.5;
   const visible = el => { for (let e = el; e && e.nodeType === 1; e = e.parentElement) { const cs = getComputedStyle(e);
       if (cs.display === "none" || cs.visibility === "hidden" || +cs.opacity < 0.01) return false; if (e === scope) break; } return true; };
@@ -73,7 +84,7 @@ AUDIT_JS = r"""
   const label = el => (el.id ? "#" + el.id : el.tagName.toLowerCase() + (typeof el.className === "string" && el.className.trim() ? "." + el.className.trim().split(/\s+/).join(".") : ""))
     + " «" + short(el.textContent || el.getAttribute("src") || el.getAttribute("poster")) + "»";
   const box = r => `[${Math.round(r.left)},${Math.round(r.top)} → ${Math.round(r.right)},${Math.round(r.bottom)}]`;
-  const sb = scopeSel ? scope.getBoundingClientRect() : { left: 0, top: 0, right: W, bottom: H };
+  const sb = scopeId ? scope.getBoundingClientRect() : { left: 0, top: 0, right: W, bottom: H };
   const isMedia = el => ["IMG", "VIDEO"].includes(el.tagName) || el.tagName.toLowerCase() === "svg";
 
   /* ---------- HTML leaves: text-bearing elements, images, videos, svgs ---------- */
@@ -105,16 +116,18 @@ AUDIT_JS = r"""
   });
 
   /* ---------- typography over visible text nodes ---------- */
-  const UNIT = /(\d[\d.,]*)([ \t ]+)(ms|s|min|h|px|pt|fps|%|×|x|B|K|M|KB|MB|GB|TB|tok)(?![\p{L}\p{N}])/gu;
+  const PLACEHOLDER_TEXT = ["Speaker Name", "Month DD", "讲者姓名", "某月某日"];
+  const UNIT = /(\d[\d.,]*)([ \t\u00a0]+)(ms|s|min|h|px|pt|fps|%|×|x|B|K|M|KB|MB|GB|TB|tok)(?![\p{L}\p{N}])/gu;
   const tw = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT);
   let tn;
   while ((tn = tw.nextNode())) {
     const p = tn.parentElement; const v = tn.nodeValue;
     if (!v.trim() || !p || p.closest("script, style, code, pre, [data-no-typeset]") || !visible(p)) continue;
     if (v.includes("==")) out.unprocessed_markup.push(label(p));
+    for (const ph of PLACEHOLDER_TEXT) if (v.includes(ph)) out.placeholders.push(label(p) + " text «" + ph + "»");
     if (/['"]/.test(v) && !p.closest(".sa-source, .url, .links")) out.straight_quotes.push(label(p));
     for (const m of v.matchAll(UNIT)) {
-      if (m[2] !== " ") out.number_unit_space.push(label(p) + " «" + m[0] + "»");
+      if (m[2] !== "\u00a0") out.number_unit_space.push(label(p) + " «" + m[0] + "»");
       const last = m.index + m[1].length - 1;                       // the number's last digit
       const a = document.createRange(); a.setStart(tn, last); a.setEnd(tn, last + 1);
       const uStart = m.index + m[1].length + m[2].length;
@@ -135,6 +148,10 @@ AUDIT_JS = r"""
     if (!same && fit === "fill") out.cropped.push(label(m) + " stretched (object-fit: fill)");
   });
   scope.querySelectorAll(".sa-placeholder").forEach(el => { if (visible(el)) out.placeholders.push(label(el)); });
+  scope.querySelectorAll("img, video").forEach(m => {
+    const src = (m.getAttribute("src") || "") + " " + (m.getAttribute("poster") || "");
+    if (visible(m) && /(^|\/)placeholders\//.test(src) && !m.classList.contains("sa-placeholder")) out.placeholders.push("placeholder image: " + src.trim());
+  });
 
   /* ---------- class names that the presentation skill's deck.css styles globally, used inside brand layouts ---------- */
   const GLOBALS = new Set("answers beat beats board bracket cell cells closer col course docs duties duty erow erows jcase jtag jtext label lede lever levers mitem mrow mspec note numeral pipeline pstage quote role roles rulelist rungtext scale slab small source specimen stack strike tcol timeline trace tri veil window".split(" "));
@@ -189,6 +206,8 @@ def split(audit: dict, final: bool) -> tuple[dict, dict]:
             continue
         if k in WARN_KEYS or (k == "placeholders" and not final):
             warnings[k] = sorted(set(v))
+        elif k == "placeholders":
+            problems[k] = sorted(set(v))
         else:
             problems[k] = v
     return problems, warnings
@@ -198,18 +217,43 @@ def launch(p):
     try:
         return p.chromium.launch()
     except Exception:
-        return p.chromium.launch(channel="chrome")  # fall back to an installed Google Chrome
+        try:
+            return p.chromium.launch(channel="chrome")  # fall back to an installed Google Chrome
+        except Exception as e:
+            raise InfraError(f"could not launch Chromium (run `python -m playwright install chromium`): {e}")
+
+
+class InfraError(Exception):
+    """The render could not run (as opposed to an audit failure). Exit code 2."""
 
 
 class Watch:
-    """Collects console errors, failed requests and requests that leave the allowed origins."""
+    """Collects console errors, failed requests and HTTP errors; records and aborts requests that leave the allowed
+    origins, so a render never reaches the network."""
 
     def __init__(self, page, allowed: tuple[str, ...]):
         self.errors, self.failed, self.external = [], [], []
+        self.allowed = allowed
         page.on("console", lambda m: self.errors.append(m.text) if m.type == "error" else None)
         page.on("pageerror", lambda e: self.errors.append(str(e)))
-        page.on("requestfailed", lambda r: self.failed.append(f"{r.url} ({r.failure})"))
-        page.on("request", lambda r: None if r.url.startswith(allowed) else self.external.append(r.url))
+        page.on("requestfailed", self._failed)
+        page.on("response", lambda r: self.failed.append(f"{r.url} (HTTP {r.status})") if r.status >= 400 else None)
+        page.route("**/*", self._route)
+
+    def _route(self, route):
+        url = route.request.url
+        if url.startswith(self.allowed):
+            route.continue_()
+        else:
+            self.external.append(url)
+            route.abort("blockedbyclient")
+
+    def _failed(self, r):
+        if r.url in self.external:              # blocked external requests are reported once, as external
+            return
+        if r.resource_type == "media" and "ERR_ABORTED" in (r.failure or ""):
+            return                              # a video reset to its poster cancels its own range request: not a failure
+        self.failed.append(f"{r.url} ({r.failure})")
 
 
 def font_problems(page) -> tuple[list, list]:
@@ -237,90 +281,161 @@ def contact_sheet(shots: list[tuple[str, pathlib.Path]], out: pathlib.Path, cols
     sheet.save(out, quality=88)
 
 
+META_JS = """() => { const m = {}; document.querySelectorAll('meta[name^="sa:"]').forEach(e => { m[e.getAttribute('name')] = e.getAttribute('content'); }); return m; }"""
+
+
+def page_geometry(metas: dict, override: str | None) -> tuple[int, int, list | None, list]:
+    """Canvas size and safe area from the page's sa: metas (or --size). Returns W, H, safe, problems."""
+    problems, W, H, safe = [], 1920, 1080, None
+    canvas = override or metas.get("sa:canvas")
+    if canvas is not None:
+        m = re.fullmatch(r"\s*(\d+)\s*[x×]\s*(\d+)\s*", canvas or "")
+        if m:
+            W, H = int(m.group(1)), int(m.group(2))
+        else:
+            problems.append(f"sa:canvas={canvas!r} is not WIDTHxHEIGHT; rendered at 1920x1080")
+    if "sa:safe" in metas:
+        parts = [v.strip() for v in (metas["sa:safe"] or "").split(",")]
+        try:
+            safe = [float(v) for v in parts]
+            if len(safe) != 4 or min(safe) < 0:
+                raise ValueError
+        except ValueError:
+            problems.append(f"sa:safe={metas['sa:safe']!r} is not four non-negative insets L,T,R,B; safe area not checked")
+            safe = None
+    for k in metas:
+        if k not in ("sa:canvas", "sa:safe"):
+            problems.append(f"unknown meta {k!r}")
+    return W, H, safe, problems
+
+
 def run_page(args) -> int:
+    srcs = [pathlib.Path(f).resolve() for f in args.files]
+    missing = [str(f) for f in srcs if not f.is_file()]
+    if missing:
+        raise InfraError("page not found: " + ", ".join(missing))
     report, ok = [], True
     with sync_playwright() as p:
         b = launch(p)
-        for src in args.files:
-            src = pathlib.Path(src).resolve()
-            html = src.read_text(encoding="utf-8")
-            size = args.size
-            if not size:
-                m = re.search(r'<meta\s+name="sa:canvas"\s+content="(\d+)x(\d+)"', html)
-                size = f"{m.group(1)}x{m.group(2)}" if m else "1920x1080"
-            W, H = map(int, size.split("x"))
-            ms = re.search(r'<meta\s+name="sa:safe"\s+content="([\d.,\s]+)"', html)
-            safe = [float(v) for v in ms.group(1).split(",")] if ms else None
-            pg = b.new_page(viewport={"width": W, "height": H}, device_scale_factor=args.scale)
-            watch = Watch(pg, ("file://", "data:", "blob:", "about:"))
-            pg.goto(src.as_uri())
-            pg.add_style_tag(content=CAPTURE_CSS)
-            pg.evaluate(POSTER_JS)
-            bad_fonts, loaded = font_problems(pg)
-            pg.wait_for_timeout(400)
-            audit = pg.evaluate(AUDIT_JS, [None, W, H, safe])
-            out_dir = pathlib.Path(args.out_dir).resolve() if args.out_dir else src.parent
-            out_dir.mkdir(parents=True, exist_ok=True)
-            png = out_dir / (src.stem + ".png")
-            pg.screenshot(path=str(png), clip={"x": 0, "y": 0, "width": W, "height": H})
-            pg.close()
-            problems, warnings = split({**audit, "console_errors": watch.errors, "failed_requests": watch.failed,
-                                        "external_requests": watch.external, "font_errors": bad_fonts}, args.final)
-            ok &= not problems
-            report.append({"page": src.name, "png": str(png), "size": size, "safe_area": safe, "fonts_loaded": loaded,
-                           "problems": problems, "warnings": warnings})
-        b.close()
+        try:
+            for src in srcs:
+                pg = b.new_page(viewport={"width": 1920, "height": 1080}, device_scale_factor=args.scale)
+                watch = Watch(pg, ("file://", "data:", "blob:", "about:"))
+                pg.goto(src.as_uri())
+                W, H, safe, meta_problems = page_geometry(pg.evaluate(META_JS), args.size)
+                pg.set_viewport_size({"width": W, "height": H})
+                pg.add_style_tag(content=CAPTURE_CSS)
+                pg.evaluate(POSTER_JS)
+                bad_fonts, loaded = font_problems(pg)
+                pg.wait_for_timeout(400)
+                audit = pg.evaluate(AUDIT_JS, [None, W, H, safe])
+                out_dir = pathlib.Path(args.out_dir).resolve() if args.out_dir else src.parent
+                out_dir.mkdir(parents=True, exist_ok=True)
+                png = out_dir / (src.stem + ".png")
+                pg.screenshot(path=str(png), clip={"x": 0, "y": 0, "width": W, "height": H})
+                pg.close()
+                problems, warnings = split({**audit, "meta": meta_problems, "console_errors": watch.errors, "failed_requests": watch.failed,
+                                            "external_requests": watch.external, "font_errors": bad_fonts}, args.final)
+                ok &= not problems
+                report.append({"page": src.name, "png": str(png), "size": f"{W}x{H}", "safe_area": safe, "fonts_loaded": loaded,
+                               "problems": problems, "warnings": warnings})
+        finally:
+            b.close()
     print(json.dumps(report, indent=1, ensure_ascii=False))
     return 0 if ok else 1
+
+
+class QuietHandler(http.server.SimpleHTTPRequestHandler):
+    """Static files only: no request log, no directory listings."""
+
+    def log_message(self, *a):
+        pass
+
+    def list_directory(self, path):
+        self.send_error(404, "directory listing disabled")
+        return None
+
+
+class Server(http.server.ThreadingHTTPServer):
+    request_queue_size = 128   # the stdlib default (5) resets connections when a themed deck loads ~30 files at once
+    daemon_threads = True
+
+    def handle_error(self, request, client_address):
+        if isinstance(sys.exc_info()[1], (BrokenPipeError, ConnectionResetError)):
+            return                 # the browser cancelled a request (e.g. a video reset to its poster): not an error
+        super().handle_error(request, client_address)
+
+
+SLIDES_JS = """() => Array.isArray(window.DECK) && typeof window.deckGoto === 'function'
+  ? window.DECK.map(s => [s.id, s.frame || s.id, s.steps, s.print === undefined ? null : s.print]) : null"""
 
 
 def run_deck(args) -> int:
     deck = pathlib.Path(args.deck).resolve()
     root = pathlib.Path(args.root).resolve() if args.root else deck
-    rel = deck.relative_to(root).as_posix()
+    if not deck.is_dir():
+        raise InfraError(f"deck directory not found: {deck}")
+    if not (deck / "index.html").is_file():
+        raise InfraError(f"no index.html in {deck}")
+    try:
+        rel = deck.relative_to(root).as_posix()
+    except ValueError:
+        raise InfraError(f"--root {root} does not contain the deck {deck}")
     out = pathlib.Path(args.out).resolve() if args.out else deck / "verification" / "brand"
     out.mkdir(parents=True, exist_ok=True)
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(root))
-    http.server.SimpleHTTPRequestHandler.log_message = lambda *a: None
-
-    class Server(http.server.ThreadingHTTPServer):
-        request_queue_size = 128   # the stdlib default (5) resets connections when a themed deck loads ~30 files at once
-        daemon_threads = True
-
-    srv = Server(("127.0.0.1", 0), handler)
+    srv = Server(("127.0.0.1", 0), functools.partial(QuietHandler, directory=str(root)))
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     base = f"http://127.0.0.1:{srv.server_address[1]}"
-    shots, per_slide, ok = [], [], True
-    with sync_playwright() as p:
-        b = launch(p)
-        pg = b.new_page(viewport={"width": 1920, "height": 1080}, device_scale_factor=args.scale)
-        watch = Watch(pg, (base, "data:", "blob:", "about:"))
-        pg.goto(f"{base}/{rel}/index.html" if rel != "." else f"{base}/index.html")
-        pg.wait_for_function("document.body.classList.contains('ready')", timeout=20000)
-        pg.add_style_tag(content=CAPTURE_CSS)
-        bad_fonts, loaded = font_problems(pg)
-        slides = pg.evaluate("window.DECK.map(s => [s.id, s.frame || s.id, s.steps, s.print])")
-        for i, (sid, frame, steps, prn) in enumerate(slides):
-            last = prn if isinstance(prn, int) else steps - 1
-            for step in (range(steps) if args.all_steps else [last]):
-                pg.evaluate(f"deckGoto({i}, {step})")
-                pg.evaluate(POSTER_JS)
-                pg.wait_for_timeout(args.wait)
-                audit = pg.evaluate(AUDIT_JS, [f"#{frame}", 1920, 1080, None])
-                name = f"{i + 1:02d}_{sid}" + (f"_{step}" if args.all_steps else "")
-                f = out / f"{name}.png"
-                pg.screenshot(path=str(f))
-                shots.append((f"{i + 1:02d} {sid}" + (f".{step}" if args.all_steps else ""), f))
-                problems, warnings = split(audit, args.final)
-                ok &= not problems
-                per_slide.append({"slide": sid, "step": step, "png": f.name, "problems": problems, "warnings": warnings})
-        missing = pg.evaluate("[...document.querySelectorAll('.missing')].map(e => e.dataset.slot)")
-        b.close()
-    srv.shutdown()
+    shots, per_slide, ok, table_problems = [], [], True, []
+    try:
+        with sync_playwright() as p:
+            b = launch(p)
+            try:
+                pg = b.new_page(viewport={"width": 1920, "height": 1080}, device_scale_factor=args.scale)
+                watch = Watch(pg, (base, "data:", "blob:", "about:"))
+                pg.goto(f"{base}/{rel}/index.html" if rel != "." else f"{base}/index.html")
+                if not pg.evaluate("Array.isArray(window.DECK)"):
+                    raise InfraError("window.DECK not found after load: not a presentation-skill canvas deck")
+                try:
+                    pg.wait_for_function("document.body && document.body.classList.contains('ready')", timeout=20000)
+                except Exception:
+                    raise InfraError("the page never became ready (body.ready): not a presentation-skill canvas deck, or it failed "
+                                     "to start; console errors: " + "; ".join(watch.errors[:5]))
+                slides = pg.evaluate(SLIDES_JS)
+                if not slides:
+                    raise InfraError("window.DECK / window.deckGoto not found: not a presentation-skill canvas deck")
+                pg.add_style_tag(content=CAPTURE_CSS)
+                bad_fonts, loaded = font_problems(pg)
+                for i, (sid, frame, steps, prn) in enumerate(slides):
+                    if not isinstance(steps, int) or steps < 1:
+                        table_problems.append(f"{sid}: steps={steps!r} (must be an integer >= 1)")
+                        steps = 1
+                    if prn is not None and (not isinstance(prn, int) or not 0 <= prn < steps):
+                        table_problems.append(f"{sid}: print={prn!r} (must be an integer in 0..{steps - 1}); using the last step")
+                        prn = None
+                    last = prn if prn is not None else steps - 1
+                    for step in (range(steps) if args.all_steps else [last]):
+                        pg.evaluate("([i, s]) => deckGoto(i, s)", [i, step])
+                        pg.evaluate(POSTER_JS)
+                        pg.wait_for_timeout(args.wait)
+                        audit = pg.evaluate(AUDIT_JS, [frame, 1920, 1080, None])
+                        name = f"{i + 1:02d}_{sid}" + (f"_{step}" if args.all_steps else "")
+                        f = out / f"{name}.png"
+                        pg.screenshot(path=str(f))
+                        shots.append((f"{i + 1:02d} {sid}" + (f".{step}" if args.all_steps else ""), f))
+                        problems, warnings = split(audit, args.final)
+                        ok &= not problems
+                        per_slide.append({"slide": sid, "step": step, "png": f.name, "problems": problems, "warnings": warnings})
+                missing = pg.evaluate("[...document.querySelectorAll('.missing')].map(e => e.dataset.slot)")
+            finally:
+                b.close()
+    finally:
+        srv.shutdown()
+        srv.server_close()
     sheet = pathlib.Path(args.sheet).resolve() if args.sheet else out / "contact_sheet.jpg"
     contact_sheet(shots, sheet)
     glob = {k: v for k, v in {"console_errors": watch.errors, "failed_requests": watch.failed, "external_requests": watch.external,
-                               "font_errors": bad_fonts, "missing_slots": missing}.items() if v}
+                               "font_errors": bad_fonts, "missing_slots": missing, "slide_table": table_problems}.items() if v}
     ok &= not glob
     print(json.dumps({"deck": str(deck), "served_root": str(root), "shots": len(shots), "out": str(out), "contact_sheet": str(sheet),
                       "fonts_loaded": loaded, "problems": glob,
@@ -336,7 +451,7 @@ def main() -> int:
     a.add_argument("--out-dir")
     a.add_argument("--size", help="WxH; default from <meta name=sa:canvas>")
     a.add_argument("--scale", type=float, default=1, help="device scale factor (2 for retina exports)")
-    a.add_argument("--final", action="store_true", help="treat .sa-placeholder elements as problems")
+    a.add_argument("--final", action="store_true", help="fail on placeholders (.sa-placeholder, placeholders/ images, stand-in text)")
     d = sub.add_parser("deck", help="print every slide of a canvas deck")
     d.add_argument("deck")
     d.add_argument("--root", help="directory to serve (default: the deck). Use only if the deck links files above itself")
@@ -345,9 +460,13 @@ def main() -> int:
     d.add_argument("--all-steps", action="store_true", help="capture every step, not only the last (like the presentation skill's shoot.py)")
     d.add_argument("--wait", type=int, default=500, help="ms to settle after each jump")
     d.add_argument("--scale", type=float, default=1)
-    d.add_argument("--final", action="store_true", help="treat .sa-placeholder elements as problems")
+    d.add_argument("--final", action="store_true", help="fail on placeholders (.sa-placeholder, placeholders/ images, stand-in text)")
     args = ap.parse_args()
-    return run_page(args) if args.mode == "page" else run_deck(args)
+    try:
+        return run_page(args) if args.mode == "page" else run_deck(args)
+    except InfraError as e:
+        print(json.dumps({"error": str(e)}, ensure_ascii=False))
+        return 2
 
 
 if __name__ == "__main__":

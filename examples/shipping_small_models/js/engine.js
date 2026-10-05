@@ -1,4 +1,6 @@
-/* Copied from the presentation skill's HTML canvas scaffold (presentation_skill package, MIT License); unmodified below this line. */
+/* Copied from the presentation skill's HTML canvas scaffold, https://github.com/grapeot/presentation_skill
+   Copyright (c) 2026 grapeot. Licensed under the MIT License (full text: LICENSE of that repository; the MIT terms
+   are also reproduced in this repository's LICENSE). Unmodified below this comment. */
 /* HTML canvas engine.
    Reveal owns navigation, fragments, notes and speaker view (press S).
    The picture is one world div: frames are laid out on a long sheet in slide order and a camera moves between them.

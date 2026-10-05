@@ -1,4 +1,6 @@
-/* Copied from the presentation skill's HTML canvas scaffold (presentation_skill package, MIT License); only the font block below was changed. */
+/* Copied from the presentation skill's HTML canvas scaffold, https://github.com/grapeot/presentation_skill
+   Copyright (c) 2026 grapeot. Licensed under the MIT License (full text: LICENSE of that repository; the MIT terms
+   are also reproduced in this repository's LICENSE). Only the font block below was changed. */
 /* ---------- fonts ---------- */
 /* (example deck) The scaffold declares its fonts here from vendor/fonts/. This example takes every font from the
    brand theme (theme/tokens.css) instead, so the five @font-face lines were removed. In a scaffolded deck you can keep them. */

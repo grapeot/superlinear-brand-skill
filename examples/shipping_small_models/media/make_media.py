@@ -1,5 +1,9 @@
-"""Generates the two synthetic screen recordings used by the example deck (no real footage). Needs Pillow and ffmpeg."""
-import math, pathlib, subprocess, sys, tempfile
+"""Generates the two synthetic screen recordings used by the example deck (no real footage).
+
+Needs Pillow and an ffmpeg build with the libvpx-vp9 encoder (`ffmpeg -encoders | grep vp9`).
+Usage: python make_media.py [out_dir]   (default: this folder)
+"""
+import math, pathlib, shutil, subprocess, sys, tempfile
 from PIL import Image, ImageDraw
 out = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else pathlib.Path(__file__).parent; W, H, N = 960, 540, 60
 def path(kind, t):
@@ -23,3 +27,4 @@ for kind, trail in (("a", (170, 176, 170)), ("b", (88, 196, 120))):
         im.save(d / f"f{i:03d}.png")
     subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-framerate", "15", "-i", str(d / "f%03d.png"), "-c:v", "libvpx-vp9", "-crf", "38", "-b:v", "0", "-pix_fmt", "yuv420p", str(out / f"run_{kind}.webm")], check=True)
     Image.open(d / f"f{int(N*0.7):03d}.png").save(out / f"run_{kind}_poster.jpg", quality=86)
+    shutil.rmtree(d, ignore_errors=True)   # the frame PNGs are only an intermediate

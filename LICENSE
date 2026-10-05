@@ -41,3 +41,10 @@ keep their own terms:
 3. Reveal.js (examples/shipping_small_models/vendor/reveal/), MIT License,
    copyright Hakim El Hattab and reveal.js contributors. See
    examples/shipping_small_models/vendor/reveal/LICENSE.
+
+4. The presentation skill's canvas scaffold files copied into the example deck
+   (examples/shipping_small_models/js/engine.js and
+   examples/shipping_small_models/css/deck.css), from
+   https://github.com/grapeot/presentation_skill, Copyright (c) 2026 grapeot,
+   MIT License (same terms as above, different copyright holder). Each file
+   carries this notice in its header.

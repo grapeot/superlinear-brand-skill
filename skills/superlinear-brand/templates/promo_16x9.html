@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- Superlinear Academy 16:9 promo, 1920x1080. Render: python scripts/render.py page templates/promo_16x9.html
+<!-- Superlinear Academy 16:9 promo, 1920x1080. Render a copy: python <skill_dir>/scripts/render.py page my_promo_16x9.html --out-dir out/ [--final]
+     Stand-ins carry class sa-placeholder (and render.py also spots placeholders/ images and "Speaker Name" /
+     "Month DD" text): a render with --final fails until every one is replaced.
      THEME PATHS: every ../theme/ below points at the skill's theme folder. If you copy this file elsewhere,
      copy theme/ next to it and change ../theme/ to theme/ (or keep absolute paths to the installed skill). -->
 <meta name="sa:canvas" content="1920x1080">
@@ -20,18 +22,18 @@
 
   <div class="sa-p-text">
     <div class="sa-kicker">Live · Online · 60 min</div>                             <!-- EDIT: format facts -->
-    <h1 class="sa-display sa-p-title" data-max-lines="2">Shipping small models</h1>  <!-- EDIT: title, at most 2 lines -->
+    <h1 class="sa-display sa-p-title" data-max-lines="2"><span class="sa-placeholder">Shipping small models</span></h1>  <!-- EDIT: title, at most 2 lines; drop the span -->
     <p class="sa-p-sub" data-max-lines="2">Distil a one-billion-parameter model that runs on your phone</p>  <!-- EDIT: one promise -->
     <div class="sa-p-when">
-      <div class="primary">Wednesday, Month DD · 11:00 AM PT / 2:00 PM ET</div>   <!-- EDIT: date and time with zones -->
+      <div class="primary"><span class="sa-placeholder">Wednesday, Month DD · 11:00 AM PT / 2:00 PM ET</span></div>   <!-- EDIT: date and time with zones -->
       <div class="secondary">Recording available to registered members</div>     <!-- EDIT or delete: second line -->
     </div>
   </div>
 
   <!-- the headshot: a full square photo, shown whole (object-fit: contain). Never crop it. -->
   <figure class="sa-p-photo">
-    <div class="sa-frame"><img class="sa-uncropped" src="../theme/placeholders/headshot.svg" alt="Speaker"></div>
-    <figcaption>Speaker Name · Role</figcaption>                                   <!-- EDIT -->
+    <div class="sa-frame"><img class="sa-uncropped sa-placeholder" src="../theme/placeholders/headshot.svg" alt="Speaker">   <!-- EDIT: the real photo; drop sa-placeholder --></div>
+    <figcaption><span class="sa-placeholder">Speaker Name · Role</span></figcaption>   <!-- EDIT: name; drop the sa-placeholder span -->
   </figure>
 
   <div class="sa-p-rule bot"></div>

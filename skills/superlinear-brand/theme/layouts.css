@@ -30,8 +30,9 @@
 .sa-em-text { color: var(--sa-green-text); }     /* green for small text */
 .sa-em-2 { color: var(--sa-second); }
 .sa-italic { font-style: italic; }
-/* Chinese text: switch the element to the CJK-first stack and relax tracking */
-.sa-zh { letter-spacing: .01em !important; }
+/* Chinese text: switch the element to the CJK-first stack and relax tracking (negative tracking collides CJK glyphs).
+   Two-class selectors so they beat the single-class size rules without !important */
+.sa-zh, .sa-zh.sa-kicker, .sa-zh.sa-lede, .sa-zh.sa-small { letter-spacing: .01em; }
 .sa-zh.sa-display, .sa-zh .sa-display { font-family: var(--sa-serif-zh); font-weight: 600; letter-spacing: .02em; }
 .sa-zh.sa-lede, .sa-zh.sa-small { font-family: var(--sa-sans-zh); }
 
@@ -59,13 +60,15 @@
 .sa-frame.dark { background: #0b0b0b; border-color: #0b0b0b; }
 /* a photo, plate or recording that must never be cropped: shown whole, letterboxed if needed */
 img.sa-uncropped, video.sa-uncropped { width: 100%; height: 100%; object-fit: contain; }
-/* a missing asset in a draft: unmistakable, never mistaken for content. render.py lists every one */
-.sa-placeholder { position: relative; width: 100%; height: 100%; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+/* draft content. On any element, .sa-placeholder is a MARKER that render.py lists (and --final fails on): put it on a
+   stand-in image or a stand-in text span, and remove it when the real content goes in.
+   On a <div> it is also the visible box for a missing asset: unmistakable, never mistaken for content. */
+div.sa-placeholder { position: relative; width: 100%; height: 100%; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 16px; padding: 40px; text-align: center; border: 2px dashed var(--sa-second);
   background: repeating-linear-gradient(135deg, var(--sa-hatch) 0 2px, transparent 2px 11px), var(--sa-card); }
-.sa-placeholder .sa-tag { font: 700 15px/1.2 var(--sa-label); letter-spacing: .2em; text-transform: uppercase; color: var(--sa-second); }
-.sa-placeholder .what { font: 400 34px/1.2 var(--sa-serif); color: var(--sa-ink); max-width: 80%; }
-.sa-placeholder .spec { font: 400 20px/1.4 var(--sa-sans); color: var(--sa-ink-2); max-width: 80%; }
+div.sa-placeholder .sa-tag { font: 700 15px/1.2 var(--sa-label); letter-spacing: .2em; text-transform: uppercase; color: var(--sa-second); }
+div.sa-placeholder .what { font: 400 34px/1.2 var(--sa-serif); color: var(--sa-ink); max-width: 80%; }
+div.sa-placeholder .spec { font: 400 20px/1.4 var(--sa-sans); color: var(--sa-ink-2); max-width: 80%; }
 /* engravings and photos read as print: neutral grey ink */
 .sa-plate-img { filter: grayscale(1) contrast(1.08) brightness(.92); }
 
@@ -76,7 +79,7 @@ img.sa-uncropped, video.sa-uncropped { width: 100%; height: 100%; object-fit: co
 .sa-cover .text { display: flex; flex-direction: column; gap: 0; }
 .sa-cover .sa-kicker { margin-bottom: 34px; }
 .sa-cover .sa-h1 { font-size: 104px; }
-/* long titles (about 30-60 characters): three lines at 80 px. Past ~60 characters, shorten the title */
+/* long titles (about 37-65 characters): three lines at 80 px. Past ~65 characters, shorten the title (layouts.md) */
 .sa-cover.long .sa-h1 { font-size: 80px; line-height: 1.07; }
 .sa-cover .sa-lede { margin-top: 40px; max-width: 760px; }
 .sa-cover .byline { margin-top: 64px; padding-top: 22px; border-top: 1px solid var(--sa-rule); display: flex; gap: 28px; align-items: baseline; }

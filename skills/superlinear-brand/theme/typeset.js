@@ -1,11 +1,19 @@
 /* Superlinear Academy typesetting helper (optional, no dependencies).
 
    What it does
-   1. Typographic quotes: ' " -> ’ ‘ “ ” (apostrophes and quotes in copy).
-   2. Number + unit stay together: "115 ms" -> "115 ms" (no line break between them).
+   1. Typographic quotes: ' and " become ’ ‘ “ ” (apostrophes and quotes in copy).
+   2. Number + unit stay together: "115 ms" gets a no-break space (U+00A0) so the pair never splits across lines.
    3. Inline emphasis in copy slots: "a better one that ==waits on a network==" renders the marked phrase as
-      <span class="sa-em">. "==" is the only markup it understands; everything else stays plain text (it builds DOM
-      nodes, never innerHTML, so copy cannot inject markup).
+      <span class="sa-em">. "==" is the only markup it understands. It works on text nodes and builds DOM nodes
+      (never innerHTML), so copy cannot inject markup and existing child elements are preserved.
+
+   Where it acts
+   - Emphasis: inside elements with [data-slot] (filled by the presentation skill's engine) and inside elements you
+     mark with [data-typeset] (for static markup that should accept ==markers== too).
+   - Quotes and units: in window.COPY strings (before the engine fills the slots) and in the text of every .frame,
+     .sa-pad, body.sa-promo and [data-typeset] element.
+   - Skipped: [data-no-typeset] subtrees, <code>, <pre>, <kbd>, <samp>, <script>, <style>, <textarea>, and
+     typewriter (.type) elements.
 
    Where to load it
    - Canvas deck (presentation skill): AFTER js/copy.js and BEFORE js/engine.js:
@@ -13,21 +21,28 @@
        <script src="brand/typeset.js"></script>
        <script src="js/deck.js"></script>
        <script src="js/engine.js"></script>
-     It typesets the strings in window.COPY before the engine fills the slots, then (on DOMContentLoaded, after the
-     engine has run) turns ==markers== in filled slots into .sa-em spans and typesets static text in frames.
-   - Promo page: in <head>, after the stylesheets. It typesets text on DOMContentLoaded.
+   - Promo page: in <head>, after the stylesheets. It runs on DOMContentLoaded.
 
    Limits
-   - Typewriter elements (.type) are split into letters by the engine: ==markers== inside them are not supported
-     (a console warning names the slot), and the engine's word split turns the no-break space back into a normal
-     space. Keep numbers with units and emphasis out of .type elements.
-   - Elements (and their subtree) with data-no-typeset, and <code>, <pre>, <script>, <style>, <textarea> are skipped.
-   - Units recognised: ms s min h px pt fps % × x B K M KB MB GB TB tok (extend window.SA_TYPESET_UNITS before loading). */
+   - Quotes are decided from the preceding character only: an apostrophe at the start of a word ('90s, 'em) becomes
+     an opening quote ‘ instead of ’ (type ’ yourself there), and quotes that open in one block and close in another
+     are treated per block.
+   - ==marker== pairs must sit inside one text node (do not split a marked phrase across elements), must not start or
+     end with a space, and cannot contain "=" (so "a == b" is left alone).
+   - Typewriter elements (.type) are split into letters by the engine: emphasis inside them is not supported (a console
+     warning names the slot) and the engine's word split turns the no-break space back into a normal space.
+   - Units recognised: ms s min h px pt fps % × x B K M KB MB GB TB tok. To ADD units, set
+     window.SA_TYPESET_UNITS = ["tokens", "GPUs"] before loading this file; they extend the default list. */
 (function () {
-  const UNITS = (window.SA_TYPESET_UNITS || ["ms", "s", "min", "h", "px", "pt", "fps", "%", "×", "x", "B", "K", "M", "KB", "MB", "GB", "TB", "tok"])
+  const DEFAULT_UNITS = ["ms", "s", "min", "h", "px", "pt", "fps", "%", "×", "x", "B", "K", "M", "KB", "MB", "GB", "TB", "tok"];
+  const UNITS = DEFAULT_UNITS.concat(window.SA_TYPESET_UNITS || [])
+    .sort((a, b) => b.length - a.length)
     .map(u => u.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+  const NBSP = "\u00a0";
   const reUnit = new RegExp("(\\d)[ \\t]+(" + UNITS + ")(?![\\p{L}\\p{N}])", "gu");
+  const reEm = /==(\S(?:[^=]*?\S)?)==/g;
   const OPENERS = /[\s([{—–\-\/“‘]/;
+  const SKIP_SEL = "[data-no-typeset], .type, code, pre, kbd, samp, script, style, textarea";
 
   /* prev: the character before s in reading order ("" at the start of a block) */
   function smart(s, prev) {
@@ -38,7 +53,7 @@
       else out += c;
       p = c;
     }
-    return out.replace(reUnit, "$1 $2");
+    return out.replace(reUnit, "$1" + NBSP + "$2");
   }
 
   function prepCopy(o) {
@@ -49,32 +64,41 @@
     }
   }
 
-  const SKIP = new Set(["CODE", "PRE", "SCRIPT", "STYLE", "TEXTAREA"]);
-  const skipped = el => !el || el.closest("[data-no-typeset], .type") || SKIP.has(el.tagName);
+  const skipped = el => !el || !!el.closest(SKIP_SEL);
+  function textNodes(root) {
+    const out = [], w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: n => skipped(n.parentElement) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+    let n; while ((n = w.nextNode())) out.push(n);
+    return out;
+  }
 
-  /* ==phrase== -> <span class="sa-em">phrase</span>, for elements whose text carries markers */
+  /* ==phrase== -> <span class="sa-em">phrase</span>, text node by text node */
   function emphasize(root) {
     (root || document).querySelectorAll("[data-slot], [data-typeset]").forEach(el => {
-      const t = el.textContent;
-      if (!t.includes("==")) return;
-      if (el.closest(".type")) { console.warn("typeset: ==emphasis== is not supported inside .type:", el.dataset.slot || el); return; }
-      const parts = t.split(/==(.+?)==/);
-      el.textContent = "";
-      parts.forEach((part, i) => {
-        if (!part) return;
-        if (i % 2) { const s = document.createElement("span"); s.className = "sa-em"; s.textContent = part; el.appendChild(s); }
-        else el.appendChild(document.createTextNode(part));
-      });
+      if (el.closest(".type")) { if (el.textContent.includes("==")) console.warn("typeset: ==emphasis== is not supported inside .type:", el.dataset.slot || el); return; }
+      for (const n of textNodes(el)) {
+        const t = n.nodeValue;
+        reEm.lastIndex = 0;
+        if (!reEm.test(t)) continue;
+        reEm.lastIndex = 0;
+        const frag = document.createDocumentFragment();
+        let last = 0, m;
+        while ((m = reEm.exec(t))) {
+          if (m.index > last) frag.appendChild(document.createTextNode(t.slice(last, m.index)));
+          const s = document.createElement("span"); s.className = "sa-em"; s.textContent = m[1]; frag.appendChild(s);
+          last = m.index + m[0].length;
+        }
+        if (last < t.length) frag.appendChild(document.createTextNode(t.slice(last)));
+        n.parentNode.replaceChild(frag, n);
+      }
     });
   }
 
-  /* typographic pass over static text under each root, in reading order */
+  /* typographic pass over static text under root, in reading order */
   function typesetText(root) {
-    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-      acceptNode: n => skipped(n.parentElement) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
     const BLOCK = "p, div, li, h1, h2, h3, h4, h5, td, th, figcaption, blockquote, text";
-    let prev = "", block = null, n;
-    while ((n = w.nextNode())) {
+    let prev = "", block = null;
+    for (const n of textNodes(root)) {
       const b = n.parentElement.closest(BLOCK) || root;
       if (b !== block) prev = "";          // a new block starts a new sentence context
       block = b;
@@ -86,8 +110,9 @@
 
   function run() {
     emphasize(document);
-    const roots = document.querySelectorAll(".frame, .sa-pad, body.sa-promo, [data-typeset]");
-    (roots.length ? roots : [document.body]).forEach(r => { if (!r.parentElement || !r.parentElement.closest(".frame, .sa-pad, body.sa-promo")) typesetText(r); });
+    const sel = ".frame, .sa-pad, body.sa-promo, [data-typeset]";
+    const roots = [...document.querySelectorAll(sel)].filter(r => !(r.parentElement && r.parentElement.closest(sel)));
+    roots.forEach(typesetText);
   }
 
   if (window.COPY) prepCopy(window.COPY);

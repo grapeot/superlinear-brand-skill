@@ -1,7 +1,7 @@
 /* Superlinear Academy promo images: 16:9 promo, 2.8:1 event cover, 1200x630 OG card.
    Load order: tokens.css, layouts.css (type primitives: .sa-kicker, .sa-display ...), promo.css.
    One HTML page = one image. The <body> is the canvas: give it the format class and render it with
-   scripts/render.py page <file.html>. Geometry is in px of the final image. */
+   <skill_dir>/scripts/render.py page <file.html> --out-dir out/. Geometry is in px of the final image. */
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
@@ -12,10 +12,10 @@ body.sa-promo h1, body.sa-promo p, body.sa-promo figure { margin: 0; }
 /* ---------- shared pieces ---------- */
 .sa-p-logo { position: absolute; display: block; width: auto; }            /* always an <img> of a shipped logo file */
 .sa-p-tag { position: absolute; font: 600 18px/1 var(--sa-label); letter-spacing: .22em; text-transform: uppercase; color: var(--sa-ink-2); }
-.sa-p-tag.sa-zh { letter-spacing: .3em !important; font-weight: 500; }
+.sa-p-tag.sa-zh { letter-spacing: .3em; font-weight: 500; }
 .sa-p-rule { position: absolute; height: 1px; background: var(--sa-rule); }
 .sa-p-title { font-weight: 400; letter-spacing: -.022em; line-height: 1.06; text-wrap: balance; }
-.sa-p-title.sa-zh { font-family: var(--sa-serif-zh); font-weight: 600; letter-spacing: .02em !important; line-height: 1.3; }
+.sa-p-title.sa-zh { font-family: var(--sa-serif-zh); font-weight: 600; letter-spacing: .02em; line-height: 1.3; }
 .sa-p-sub { font: 400 34px/1.35 var(--sa-sans); color: var(--sa-ink-2); text-wrap: balance; }
 .sa-p-sub.sa-zh { font-family: var(--sa-sans-zh); }
 .sa-p-when { border-left: 3px solid var(--sa-green); padding: 4px 0 4px 26px; }

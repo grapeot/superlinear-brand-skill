@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Superlinear Academy 16:9 promo, 1920x1080. Render: python scripts/render.py page templates/promo_16x9.html
+     THEME PATHS: every ../theme/ below points at the skill's theme folder. If you copy this file elsewhere,
+     copy theme/ next to it and change ../theme/ to theme/ (or keep absolute paths to the installed skill). -->
+<meta name="sa:canvas" content="1920x1080">
+<meta name="sa:safe" content="60,24,60,24">
+<title>Promo 16:9</title>
+<link rel="stylesheet" href="../theme/tokens.css">
+<link rel="stylesheet" href="../theme/layouts.css">
+<link rel="stylesheet" href="../theme/promo.css">
+</head>
+<body class="sa-promo f-16x9">
+  <img class="sa-p-logo" src="../theme/logos/primary-black-compact.svg" alt="Superlinear Academy">
+  <div class="sa-p-tag">Free live session</div>                                  <!-- EDIT: event type, 2-4 words -->
+  <div class="sa-p-rule top"></div>
+
+  <div class="sa-p-text">
+    <div class="sa-kicker">Live · Online · 60 min</div>                             <!-- EDIT: format facts -->
+    <h1 class="sa-display sa-p-title" data-max-lines="2">Shipping small models</h1>  <!-- EDIT: title, at most 2 lines -->
+    <p class="sa-p-sub" data-max-lines="2">Distil a one-billion-parameter model that runs on your phone</p>  <!-- EDIT: one promise -->
+    <div class="sa-p-when">
+      <div class="primary">Wednesday, Month DD · 11:00 AM PT / 2:00 PM ET</div>   <!-- EDIT: date and time with zones -->
+      <div class="secondary">Recording available to registered members</div>     <!-- EDIT or delete: second line -->
+    </div>
+  </div>
+
+  <!-- the headshot: a full square photo, shown whole (object-fit: contain). Never crop it. -->
+  <figure class="sa-p-photo">
+    <div class="sa-frame"><img class="sa-uncropped" src="../theme/placeholders/headshot.svg" alt="Speaker"></div>
+    <figcaption>Speaker Name · Role</figcaption>                                   <!-- EDIT -->
+  </figure>
+
+  <div class="sa-p-rule bot"></div>
+  <div class="sa-p-foot"><span>Superlinear Academy</span><span class="sa-brandline">Make what lasts.</span><span class="url">superlinear.academy</span></div>
+</body>
+</html>

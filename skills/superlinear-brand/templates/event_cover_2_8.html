@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Superlinear Academy event cover, 2.8:1, 2100x750. Render: python scripts/render.py page templates/event_cover_2_8.html
+     Platforms crop the edges of wide covers and overlay buttons: everything stays inside the safe area
+     (220 px left and right, 60 px top and bottom), which render.py checks. The green band is the only bleed.
+     THEME PATHS: see promo_16x9.html. -->
+<meta name="sa:canvas" content="2100x750">
+<meta name="sa:safe" content="220,60,220,60">
+<title>Event cover 2.8:1</title>
+<link rel="stylesheet" href="../theme/tokens.css">
+<link rel="stylesheet" href="../theme/layouts.css">
+<link rel="stylesheet" href="../theme/promo.css">
+</head>
+<body class="sa-promo f-cover">
+  <img class="sa-p-logo" src="../theme/logos/primary-black-compact.svg" alt="Superlinear Academy">
+  <div class="sa-p-tag">Free live session</div>                                  <!-- EDIT -->
+
+  <div class="sa-p-text">
+    <div class="sa-kicker">Live · Online · 60 min</div>                             <!-- EDIT -->
+    <h1 class="sa-display sa-p-title" data-max-lines="2">Shipping small models</h1>  <!-- EDIT: at most 2 lines -->
+    <p class="sa-p-sub" data-max-lines="1">Distil a one-billion-parameter model that runs on your phone</p>  <!-- EDIT: 1 line -->
+    <div class="sa-p-when">
+      <div class="primary">Wednesday, Month DD · 11:00 AM PT / 2:00 PM ET</div>   <!-- EDIT -->
+      <div class="secondary">Recording available to registered members</div>     <!-- EDIT or delete -->
+    </div>
+  </div>
+
+  <figure class="sa-p-photo">
+    <div class="sa-frame"><img class="sa-uncropped" src="../theme/placeholders/headshot.svg" alt="Speaker"></div>
+    <figcaption>Speaker Name · Role</figcaption>                                   <!-- EDIT -->
+  </figure>
+
+  <div class="sa-p-band" data-bleed></div>
+</body>
+</html>

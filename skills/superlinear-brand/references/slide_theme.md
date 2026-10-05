@@ -7,8 +7,9 @@ underneath for clicks, notes and the speaker view), `css/deck.css` the scaffold'
 frames, the camera or the click logic, so every presentation-skill rule (one claim per slide, state as a function of
 (slide, step), the copy workflow, `tools/shoot.py`, critic rounds, `export-pdf`) still applies.
 
-The reference implementation is `examples/shipping_small_models/` in this repo. It is laid out exactly like the
-install below (`brand/` inside the deck; in this repo `brand/` is a symlink to the skill's `theme/`, in your deck it is
+The reference implementation is the example deck in the source repository,
+[`examples/shipping_small_models/`](https://github.com/grapeot/superlinear-brand-skill/tree/master/examples/shipping_small_models) (not part of a skill-only install; the minimal
+skeleton below is enough to start without it). It is laid out exactly like the install below (`brand/` inside the deck; in this repo `brand/` is a symlink to the skill's `theme/`, in your deck it is
 a real copy). Its `<head>`, `#chrome` and script block can be copied verbatim.
 
 ## Install into a deck
@@ -73,7 +74,7 @@ a real copy). Its `<head>`, `#chrome` and script block can be copied verbatim.
    ```
 
    Alternatively run this skill's renderer, which already does this and can capture every step like `shoot.py`:
-   `python brand-skill/scripts/render.py deck deck/ --all-steps --out deck/verification/<round>`. The presentation
+   `python <skill_dir>/scripts/render.py deck deck/ --all-steps --out deck/verification/<round>`. The presentation
    skill's `start-server.py` for live preview is unaffected in practice (a browser opens few connections at a time),
    but if a preview shows a missing stylesheet, reload.
 8. **Frames:** write them in `tools/build_index.py` with the layouts in [layouts.md](layouts.md) (each frame:
@@ -82,7 +83,7 @@ a real copy). Its `<head>`, `#chrome` and script block can be copied verbatim.
 9. **Register:** record in the deck's `visual_guideline.md`: "Superlinear Academy monochrome editorial theme
    (superlinear-brand skill)", plus what green and oxblood mean in this deck.
 10. **Verify** with both tools: the patched `tools/shoot.py` (every step, the presentation skill's acceptance) and
-   `scripts/render.py deck deck/ --out deck/verification/brand_<round>` (layout, SVG and typography audit). Use
+   `python <skill_dir>/scripts/render.py deck deck/ --out deck/verification/brand_<round>` (layout, SVG and typography audit). Use
    `--final` on the version you ship. See [verification.md](verification.md).
 
 ## Copy slots, emphasis and typography
@@ -107,11 +108,73 @@ inline convention, implemented by `brand/typeset.js`:
 - **Typography is automatic for slot text:** straight quotes become ’ ‘ “ ”, and a number followed by a unit (`115 ms`,
   `2 s`, `40 %`, `8 GB`) gets a no-break space so the pair never splits across lines. Static text written in the frames
   is typeset too.
-- **Limits:** the scaffold's typewriter effect (`.type`) splits text into letters before the helper runs, so it cannot
-  carry `==` emphasis (a console warning names the slot), and its word split turns the no-break space back into a
-  plain space. Keep emphasis and number+unit pairs out of `.type` elements.
+- **Static markup:** text written directly in frames is typeset too (quotes, units). To allow `==phrase==` in static
+  markup as well, put `data-typeset` on the element. `data-no-typeset` exempts a subtree; `<code>`, `<pre>`, `<kbd>`
+  and `<samp>` are always skipped.
+- **Extra units:** set `window.SA_TYPESET_UNITS = ["tokens", "GPUs"]` before loading `typeset.js`; they are added to
+  the defaults (`ms s min h px pt fps % × x B K M KB MB GB TB tok`). The audit's number+unit check uses the defaults.
+- **Limits:**
+  - Quotes are decided from the character before them, so an apostrophe that starts a word (`'90s`, `'em`) becomes ‘
+    instead of ’; type ’ there yourself. A quotation that opens in one block and closes in another is handled per block.
+  - A `==…==` pair must sit inside one text node (not split across elements), must not start or end with a space, and
+    cannot contain `=`; `a == b` is left as it is.
+  - The scaffold's typewriter effect (`.type`) splits text into letters before the helper runs, so it cannot carry
+    `==` emphasis (a console warning names the slot), and its word split turns the no-break space back into a plain
+    space. Keep emphasis and number+unit pairs out of `.type` elements.
 - Without `typeset.js`, `render.py` reports visible `==` markers as a problem and straight quotes or breakable
   number+unit spaces as warnings.
+
+## Minimal `index.html` skeleton
+
+Everything a themed canvas deck needs, in one place (frames normally come from `tools/build_index.py`):
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talk title</title>
+<link rel="icon" href="brand/logos/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="vendor/reveal/reset.css">
+<link rel="stylesheet" href="vendor/reveal/reveal.css">
+<link rel="stylesheet" href="css/deck.css">          <!-- scaffold, with its @font-face block deleted -->
+<link rel="stylesheet" href="brand/tokens.css">
+<link rel="stylesheet" href="brand/layouts.css">
+<link rel="stylesheet" href="brand/canvas.css">
+</head>
+<body>
+<div class="reveal"><div class="slides"></div></div>
+<div id="stage">
+<div id="viewport"><div id="world">
+<!-- FRAMES:BEGIN -->
+<div class="frame" id="claim">
+  <div class="sa-pad sa-claim">
+    <div class="sa-kicker">The claim</div>
+    <h2 class="sa-display sa-h1 rise" data-in="claim.0" data-max-lines="3" data-slot="claim.headline"></h2>
+  </div>
+</div>
+<!-- FRAMES:END -->
+</div></div>
+<div id="grain"></div>
+<div id="chrome">
+  <img class="sa-chrome-logo" src="brand/logos/primary-black-compact.svg" alt="Superlinear Academy">
+  <div class="run top"><span>Talk title · Occasion</span><span id="part"></span></div>
+  <div class="rule top"></div>
+  <div class="rule bot"></div><div class="progress" id="progress"></div>
+  <div class="run bot"><span>Speaker · Date</span><span id="folio"></span></div>
+  <div class="sa-brandline">Make what lasts.</div>
+</div>
+</div>
+<script src="vendor/reveal/reveal.js"></script>
+<script src="vendor/reveal/notes/notes.js"></script>
+<script src="js/copy.js"></script>        <!-- window.COPY = { claim: { headline: "… ==key phrase==", notes: "…" } } -->
+<script src="brand/typeset.js"></script>
+<script src="js/deck.js"></script>        <!-- window.DECK = [ { id: "claim", part: "I · Part", steps: 1 } ] -->
+<script src="js/engine.js"></script>
+</body>
+</html>
+```
 
 ## What `canvas.css` does
 

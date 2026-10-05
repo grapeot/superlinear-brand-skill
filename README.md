@@ -30,10 +30,11 @@ docs/                          prd.md, rfc.md, working.md
 
 ## Install as a skill
 
-Give your agent this repository and ask it to install the skill:
+Give your agent this repository (<https://github.com/grapeot/superlinear-brand-skill>, branch `master`) and ask it
+to install the skill:
 
 ```text
-Install the skill in this repository into my workspace. Copy or link skills/superlinear-brand/ into my skills
+Install the skill from https://github.com/grapeot/superlinear-brand-skill into my workspace. Copy or link skills/superlinear-brand/ into my skills
 directory (for Claude Code: ~/.claude/skills/superlinear-brand/ or .claude/skills/superlinear-brand/ in a project),
 or register skills/superlinear-brand/SKILL.md in my workspace's skill index. Expose exactly one root skill.
 ```
@@ -61,7 +62,8 @@ uv pip install --python .venv/bin/python -r requirements.txt
 The script exits non-zero if a page makes an external request, logs a console error, fails to load a font or image,
 lets text leave the canvas or the safe area, wraps a title past its `data-max-lines`, splits a number from its unit,
 lets SVG labels overlap or run out of their boxes, crops a headshot or recording, or (with `--final`) still contains
-a placeholder. It warns about straight quotes and scaffold class-name collisions.
+a placeholder or stand-in text. It warns about straight quotes and scaffold class-name collisions. Requests to the
+network are blocked during a render. Exit code 2 (with `{"error": …}`) means the render could not run at all.
 
 To use the theme in a new deck, scaffold an HTML canvas deck with the presentation skill, copy
 `skills/superlinear-brand/theme/` into it as `brand/`, and follow

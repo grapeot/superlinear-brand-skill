@@ -7,24 +7,35 @@ checklist below. The audit catches geometry, offline loading and typography; onl
 
 ```bash
 # promo pages (size and safe area come from the page's <meta> tags); PNGs land next to the pages unless --out-dir
-python scripts/render.py page path/to/promo.html [more.html …] [--out-dir out/] [--scale 2] [--final]
+python <skill_dir>/scripts/render.py page path/to/promo.html [more.html …] [--out-dir out/] [--scale 2] [--final]
 
 # a presentation-skill canvas deck: every slide at its last step (or its `print` step) → NN_<id>.png + contact_sheet.jpg
-python scripts/render.py deck path/to/deck [--out path/to/deck/verification/brand_r1] [--all-steps] [--final]
+python <skill_dir>/scripts/render.py deck path/to/deck [--out path/to/deck/verification/brand_r1] [--all-steps] [--final]
 ```
 
 Deck mode serves the **deck directory** on a loopback port (with a deep listen backlog, see
 [pitfalls.md](pitfalls.md)) and writes to `<deck>/verification/brand/` unless `--out` is given; give each review round
 its own `--out`, as the presentation skill does. Pass `--root DIR` only if the deck links files above its own
 directory (it then serves `DIR`). `--all-steps` captures every step of every slide (`NN_<id>_<step>.png`), like the
-presentation skill's `shoot.py`. Captures hide the navigator button and show each `<video>` at its poster.
+presentation skill's `shoot.py`. Captures hide the navigator button and show each `<video>` at its poster. The local
+server serves files only (no directory listings). Requests to any other origin are recorded and **aborted**, so a render
+never reaches the network.
+
+In page mode the canvas size and safe area are read from the page's `<meta name="sa:canvas">` / `<meta
+name="sa:safe">` through the DOM (attribute order and quoting do not matter); `--size` overrides the canvas.
+
+**Exit codes:** `0` clean; `1` audit problems (JSON report on stdout); `2` the render could not run at all (missing
+page, deck directory not found or outside `--root`, no `index.html`, not a presentation-skill canvas deck, Chromium
+not installed). Exit 2 prints `{"error": "…"}`; fix the setup, not the slides.
 
 **Problems** (exit code 1):
 
 | Key | Meaning |
 |---|---|
-| `console_errors`, `failed_requests` | Something did not load or threw |
-| `external_requests` | A request left `file://` / the loopback server (CDN fonts, analytics, remote images) |
+| `console_errors`, `failed_requests` | Something did not load or threw; `failed_requests` also lists every HTTP response ≥ 400 with its URL |
+| `external_requests` | A request to anything but `file://` / the loopback server (CDN fonts, analytics, remote images); it was blocked |
+| `meta` | An `sa:canvas` / `sa:safe` meta that cannot be parsed (the page is then rendered at 1920×1080 / without a safe-area check), or an unknown `sa:` meta |
+| `slide_table` | (deck) a slide whose `steps` is not an integer ≥ 1 or whose `print` is outside `0..steps-1` |
 | `font_errors` | A vendored font failed to load (wrong path) |
 | `offcanvas` | HTML text, an image or a video extends past the canvas (page mode) or past its frame (deck mode) |
 | `unsafe` | ... is outside the `sa:safe` area (`[data-bleed]` exempt) |
@@ -36,7 +47,7 @@ presentation skill's `shoot.py`. Captures hide the navigator button and show eac
 | `svg_text_overflow` | SVG `<text>` whose centre lies inside a `<rect>` is not fully inside that rect (a label running out of its box) |
 | `svg_text_overlap` | Two SVG `<text>` boxes overlap (an axis title on a tick label, two value labels) |
 | `unprocessed_markup` | `==` emphasis markers are visible (`typeset.js` not loaded, or used inside `.type`) |
-| `placeholders` | `.sa-placeholder` elements, only with `--final` |
+| `placeholders` | Only with `--final`: draft content still on the page, i.e. any `.sa-placeholder` element (box or marker), any `<img>`/`<video>` loaded from a `placeholders/` folder, and visible stand-in text (`Speaker Name`, `Month DD`, `讲者姓名`, `某月某日`) |
 | `missing_slots` | (deck) a presentation-skill copy slot was not filled |
 
 **Warnings** (reported under `warnings`, exit code unaffected):
@@ -46,7 +57,7 @@ presentation skill's `shoot.py`. Captures hide the navigator button and show eac
 | `straight_quotes` | `'` or `"` in visible text (load `typeset.js`, or type ’ “ ”) |
 | `number_unit_space` | A breakable space between a number and its unit; it may break after an edit (use U+00A0 or `typeset.js`) |
 | `scaffold_class` | An element inside `.sa-pad` uses a class the scaffold's `deck.css` styles globally (`.note`, `.role` …) |
-| `placeholders` | Without `--final`: the list of missing assets still in the draft |
+| `placeholders` | Without `--final`: the same list, as a reminder of what the draft still lacks |
 
 `fonts_loaded` lists the faces actually used, a quick check that the brand fonts (not fallbacks) rendered.
 

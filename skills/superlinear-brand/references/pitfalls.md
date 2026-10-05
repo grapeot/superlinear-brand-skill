@@ -28,7 +28,7 @@
 | Navigator button in every capture | The round grid button (bottom right) shows on every frame of a screenshot set | `render.py` hides it in captures; `canvas.css` styles it as a hairline control; `<body class="sa-no-navbtn">` hides it for recordings |
 | Kicker repeats the running header | The header says "Hosted or your own" and so does the kicker below it | `#part` names the section of the talk; the kicker names what this frame measures or compares |
 | Decorative filler | An icon grid or stock illustration fills empty space | Empty space is fine. Add a figure only if it explains something |
-| Placeholder shipped | "Speaker Name", "Month DD", the silhouette, or a `.sa-placeholder` in a published image | Mark missing assets with `.sa-placeholder`; run `render.py --final` on the final version; search the HTML for `Speaker Name`, `Month DD`, `headshot.svg`, `EDIT` |
+| Placeholder shipped | "Speaker Name", "Month DD", the silhouette, or a `.sa-placeholder` in a published image | Run `render.py --final` on the version you ship: it fails on `.sa-placeholder` (boxes and markers), on images from `placeholders/`, and on the stand-in strings. The templates mark their stand-ins with `sa-placeholder`; remove the class with the stand-in |
 | Invented facts | A date, price, statistic or quote filled in to make the template look complete | Leave the row or line out until there is a source |
 | Sub-brand misuse | "Superlinear AI" mark on a general community promo | Parent brand by default; sub-brand only for AI course / AI community promotions |
 | Serving a whole repository | `render.py deck` served a large parent directory to the browser | It serves the deck directory by default; pass `--root` only for a deck that links files above itself |

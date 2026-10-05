@@ -24,6 +24,10 @@ This skill owns the **visual layer**. It does not own the deck engine, the argum
   acceptance criteria. This skill supplies the theme you drop into that deck. Read both.
 - **Promo images, covers, OG cards:** this skill is complete on its own (templates + `scripts/render.py`).
 
+**Paths.** Every `theme/`, `templates/`, `scripts/` and `references/` path in this skill is relative to the skill
+directory, written `<skill_dir>` in commands (the folder that contains this `SKILL.md`). Run the renderer as
+`python <skill_dir>/scripts/render.py …` from wherever your files are.
+
 ## What is in the folder
 
 | Path | What it is |
@@ -40,9 +44,10 @@ This skill owns the **visual layer**. It does not own the deck engine, the argum
 | `scripts/render.py` | Headless render to PNG + audit (`page` mode for promos, `deck` mode for canvas decks) |
 | `references/` | The rules, one topic per file (below) |
 
-A worked example lives in the repo, outside the skill: `examples/shipping_small_models/` (an 18-slide canvas deck,
-one slide per layout, laid out exactly as the documented install with the theme at `brand/`, with screenshots and a
-contact sheet) and `examples/promo/` (all templates rendered, plus a
+A worked example lives in the source repository, outside the skill folder (a skill-only install does not have it):
+[`examples/shipping_small_models/`](https://github.com/grapeot/superlinear-brand-skill/tree/master/examples/shipping_small_models) (an 18-slide canvas deck, one slide per layout, laid
+out exactly as the documented install with the theme at `brand/`, with screenshots and a contact sheet) and
+[`examples/promo/`](https://github.com/grapeot/superlinear-brand-skill/tree/master/examples/promo) (all templates rendered, plus a
 Chinese variant).
 
 ## Workflow
@@ -57,7 +62,8 @@ Chinese variant).
    [references/layouts.md](references/layouts.md).
 3. **Promo image.** Copy the matching template, keep the theme paths valid, edit only the `EDIT` lines, swap in the
    real headshot (full square image). Details: [references/promo_formats.md](references/promo_formats.md).
-4. **Render and audit.** `python scripts/render.py page <file.html>` or `python scripts/render.py deck <deck_dir>`
+4. **Render and audit.** `python <skill_dir>/scripts/render.py page <file.html>` or
+   `python <skill_dir>/scripts/render.py deck <deck_dir>`
    (add `--final` for the version you ship: it fails on placeholders). Exit code 0 is required, then **look at every
    PNG yourself**: the audit checks geometry inside HTML and SVG, offline loading and typography, not taste.
    Checklist: [references/verification.md](references/verification.md).

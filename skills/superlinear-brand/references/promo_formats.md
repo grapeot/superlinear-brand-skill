@@ -1,7 +1,7 @@
 # Promo images, event covers, OG cards
 
 Each image is one HTML page whose `<body>` is the canvas. Templates are in `templates/`; rendered examples are in
-`examples/promo/screenshots/` (`promo_16x9.png`, `event_cover_2_8.png`, `og_1200x630.png`, and the Chinese
+[`examples/promo/screenshots/`](https://github.com/grapeot/superlinear-brand-skill/tree/master/examples/promo/screenshots) in the source repository (`promo_16x9.png`, `event_cover_2_8.png`, `og_1200x630.png`, and the Chinese
 `promo_16x9_zh.png`).
 
 | Format | Size | Template | Safe area (L,T,R,B) | Typical use |
@@ -11,22 +11,24 @@ Each image is one HTML page whose `<body>` is the canvas. Templates are in `temp
 | OG / link preview | 1200×630 | `og_1200x630.html` | 36, 36, 36, 36 | Shared-link card on social sites and chat apps |
 
 Each template declares its size and safe area in `<meta name="sa:canvas">` and `<meta name="sa:safe">`;
-`scripts/render.py page` reads both, so the audit enforces the safe area.
+`render.py page` reads both, so the audit enforces the safe area.
 
 ## Making one
 
 1. Copy the template next to your working files. Keep the theme reachable: either copy `theme/` beside it and change
    `../theme/` to `theme/`, or point the paths at the installed skill's `theme/` with absolute paths. The page must
    load only local files.
-2. Edit the lines marked `EDIT`. Delete optional lines rather than leaving placeholder text.
+2. Edit the lines marked `EDIT`. Delete optional lines rather than leaving placeholder text. The template's stand-ins
+   (example title, date, name, photo) carry `class="sa-placeholder"`: remove the class (or its `<span>`) when you put
+   the real content in. An untouched template fails `render.py --final`.
 3. Replace `theme/placeholders/headshot.svg` with the speaker's **full square photo** (`img.sa-uncropped`, shown
    whole). Do not crop to the face, do not use `object-fit: cover`, do not add a circle mask. If the photo is not
    square, it letterboxes on the card colour; better, get a square original.
 4. Typography: add `<script src="../theme/typeset.js"></script>` in `<head>` (after the stylesheets) to get
    typographic quotes and unbroken number+unit pairs automatically; the audit warns about both otherwise.
-5. Chinese copy: add `.sa-zh` to the title, subtitle, tag and secondary time line (see `examples/promo/promo_16x9_zh.html`).
+5. Chinese copy: add `.sa-zh` to the title, subtitle, tag and secondary time line (see [`examples/promo/promo_16x9_zh.html`](https://github.com/grapeot/superlinear-brand-skill/blob/master/examples/promo/promo_16x9_zh.html)).
    Primary language first; the other language on its own line, never in brackets.
-6. Render: `python scripts/render.py page my_promo.html --out-dir out/` (add `--scale 2` for a 2× export). Fix
+6. Render: `python <skill_dir>/scripts/render.py page my_promo.html --out-dir out/` (add `--scale 2` for a 2× export). Fix
    every problem the audit reports, then open the PNG and run the checklist in [verification.md](verification.md).
 
 ## Copy rules for promos

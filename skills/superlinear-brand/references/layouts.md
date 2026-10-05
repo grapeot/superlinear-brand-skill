@@ -2,15 +2,16 @@
 
 Eighteen layouts and patterns in `theme/layouts.css`. Each lives in a `.sa-pad` box (content area x 160–1760,
 y 130–950 of a 1920×1080 frame, the presentation skill's content box) inside a canvas `.frame` or a plain `<section class="sa-slide">`. Full working markup for every
-one is in `examples/shipping_small_models/index.html`; screenshots are in
-`examples/shipping_small_models/screenshots/` (file names below) with a contact sheet at `contact_sheet.jpg`.
+one is in the example deck's [`index.html`](https://github.com/grapeot/superlinear-brand-skill/blob/master/examples/shipping_small_models/index.html) (in the source repository,
+not in a skill-only install); screenshots are in [`screenshots/`](https://github.com/grapeot/superlinear-brand-skill/tree/master/examples/shipping_small_models/screenshots) (file names
+below) with a contact sheet at `contact_sheet.jpg`. The skeletons below are complete enough to build from without it.
 
 Shared primitives: `.sa-kicker` (letter-spaced label with the green rule; `.no-rule` to drop it), `.sa-display` +
 `.sa-h1/.sa-h2/.sa-h3`, `.sa-lede`, `.sa-read` (serif reading text), `.sa-small`, `.sa-source`, `.sa-em` (green, ≥ 24 px),
 `.sa-em-text` (green, small), `.sa-em-2` (oxblood), `.sa-card` (+ `.keep` / `.drop`), `.sa-frame` (+ `.tight`, `.dark`),
 `img.sa-uncropped` / `video.sa-uncropped`, `.sa-placeholder`, `.sa-note`, `.sa-button`, `.sa-zh`.
 
-Put `data-max-lines="N"` on every headline and lede: `scripts/render.py` fails if it wraps further.
+Put `data-max-lines="N"` on every headline and lede: `<skill_dir>/scripts/render.py` fails if it wraps further.
 
 **Green budget.** Structural marks are fixed and do not count: the kicker rule, bullet dashes in the CTA list, the
 timeline's current dot, the recommended table column's header rule. Beyond those, a frame gets **one** green
@@ -240,7 +241,8 @@ Rules for recordings:
 - **Every video has a poster,** and the poster is a representative frame of *that* recording (mid-action, not a
   shared title card): screenshots, the PDF handout and slow connections show the poster. Extract it with
   `ffmpeg -ss <t> -i run.webm -frames:v 1 run_poster.jpg`. `render.py` fails on a video without a poster.
-- **Format:** WebM (VP9) or MP4 (H.264); headless Chromium builds often lack H.264, so WebM renders everywhere.
+- **Format:** WebM (VP9) or MP4 (H.264); headless Chromium builds often lack H.264, so WebM renders everywhere
+  (encode with `ffmpeg -i in.mov -c:v libvpx-vp9 -crf 36 -b:v 0 -an out.webm`; needs an ffmpeg built with libvpx).
   Muted, `playsinline`, `loop`, `preload="metadata"`.
 - **Playback:** start and stop it from `window.DECK_HOOKS` (example `js/deck.js`: play on enter; pause and `load()`
   on leave so the poster returns). Do not autoplay on load: the deck preloads every frame.
@@ -288,8 +290,10 @@ unmistakable (oxblood dashed border, hatching, a "Placeholder" tag) so nobody mi
   <div class="spec">Format and length: portrait, about 30 s</div>
 </div></div>
 ```
-Use it inside any frame slot (media, figure, bio photo). `render.py` lists every placeholder as a warning, and
-`render.py --final` fails on them. Never ship one; never fill the gap with a stock image or a generated look-alike.
+Use it inside any frame slot (media, figure, bio photo). On a `<div>` the class draws this box; on any other element
+(`<img>`, a `<span>` around stand-in text) it is only a marker with no styling, which is how the promo templates flag
+their example photo, name and date. `render.py` lists every placeholder as a warning, and `render.py --final` fails on
+them, and also on images from a `placeholders/` folder and on the stand-in strings `Speaker Name`, `Month DD`. Never ship one; never fill the gap with a stock image or a generated look-alike.
 
 ## Choosing
 

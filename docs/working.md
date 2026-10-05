@@ -84,3 +84,44 @@ independent critic reviewed the deck. Changes, by finding:
   straight quotes and number+unit spaces (warnings), and a "115 / ms" break across 21 column widths (flagged exactly
   on the 16 widths where it breaks).
 - Every slide and promo PNG inspected at full size or on the contact sheet.
+
+## 2026-10-05 — v0.3: code-review fixes before publishing
+
+Public home: https://github.com/grapeot/superlinear-brand-skill (branch `master`).
+
+- [x] **`--final` and template stand-ins.** `--final` now fails on `.sa-placeholder` (box or marker), on any
+      `<img>`/`<video>` from a `placeholders/` folder, and on visible stand-in text (Speaker Name, Month DD, 讲者姓名,
+      某月某日). The box styling moved to `div.sa-placeholder`, so the class is a plain marker elsewhere. The templates
+      mark their example title, date, name and photo. Verified: all three untouched templates exit 1 with `--final`
+      and 0 without.
+- [x] **Paths.** `SKILL.md` states that `theme/`, `templates/`, `scripts/`, `references/` are relative to the skill
+      directory; every command uses `<skill_dir>/scripts/render.py`; the bogus `brand-skill/` path is gone.
+- [x] **Upstream notices.** The example's `js/engine.js` and `css/deck.css` carry the presentation skill's copyright
+      and MIT notice; LICENSE lists them as item 4.
+- [x] **Meta parsing** via the DOM after load; unparseable or unknown `sa:` metas are a `meta` problem.
+- [x] **Frame lookup** by `getElementById` (verified with a frame id that starts with a digit).
+- [x] **typeset.js emphasis** works on text nodes (keeps child markup), regex `==(\S(?:[^=]*?\S)?)==` leaves
+      `a == b` alone, honours `data-no-typeset`, skips code/pre/kbd/samp; `[data-typeset]`, quote limits ('90s) and
+      unit extension documented; `SA_TYPESET_UNITS` now extends the defaults.
+- [x] **External requests are aborted** during renders (still recorded).
+- [x] **Docs without the repo:** example links point to the GitHub tree; `slide_theme.md` has a complete minimal
+      `index.html` skeleton (rendered clean in a scratch deck before committing).
+- [x] **Exit code 2** with `{"error": …}` for setup failures (missing page, deck dir missing or outside `--root`, no
+      `index.html`, not a canvas deck, Chromium missing); the server is shut down and closed in `finally`.
+- [x] Nice-to-haves: HTTP ≥ 400 recorded in `failed_requests`; aborted media range requests and broken pipes from a
+      video reset are not reported; directory listing disabled; `steps`/`print` validated (`slide_table`);
+      `.gitignore` gains `out/` and `**/verification/`; template comments render to `--out-dir out/`; literal NBSPs
+      replaced by ` ` escapes; `.sa-zh` without `!important`; layouts.css capacity comment matches layouts.md;
+      `make_media.py` deletes its frame folders and documents the libvpx-vp9 dependency.
+
+**Verification (v0.3)**
+
+- Example deck: exit 0, no problems; warnings only for the deliberate stand-ins (cover and speaker text, the offline
+  placeholder). `--final`: exit 1. `--all-steps`: exit 0, no server noise.
+- Promos (3 templates + Chinese example): exit 0; templates with `--final`: exit 1.
+- Negative suite: SVG outside / overflow / overlap, `==` leftovers, video without poster, placeholders, straight
+  quotes and unit spaces (warnings), number+unit break (16 of 21 widths, the ones that break), bad `sa:safe` meta,
+  blocked Google Fonts request, HTTP 404, out-of-range `print`, digit-leading frame id, exit 2 for a missing page /
+  bad `--root` / missing deck dir / non-deck page.
+- Contact sheet and promo renders inspected; no visual change apart from the Chinese footer slogan's tracking, which
+  now follows its inline style.

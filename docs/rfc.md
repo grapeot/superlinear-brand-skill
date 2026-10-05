@@ -88,7 +88,11 @@ SVG: text outside the SVG box, text running out of the rect its centre sits in, 
 Warnings (non-fatal): straight quotes, breakable number+unit spaces, scaffold global class names inside brand layouts,
 and placeholders (fatal with `--final`). Deck mode serves the deck directory (not a repository root) with a listen
 backlog of 128, can capture every step (`--all-steps`), hides the navigator button and resets videos to their
-posters before each capture, and writes a contact sheet. The audit catches
+posters before each capture, and writes a contact sheet. Since v0.3: requests to non-local origins are aborted (and recorded), HTTP
+responses ≥ 400 are recorded, page geometry is read from the DOM rather than regex-matched HTML, frames are looked up
+with `getElementById`, `--final` also catches stand-in images and text, slide-table `steps`/`print` values are
+validated, the local server refuses directory listings, and setup failures exit with code 2 and `{"error": …}` so a
+broken setup is never confused with a failing slide. The audit catches
 geometry; the skill's verification checklist covers what only eyes catch.
 
 ## Composition with the presentation skill

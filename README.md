@@ -2,8 +2,8 @@
 
 An agent skill that lets any AI coding agent produce on-brand Superlinear Academy visuals: slide decks, promo
 images, event covers and link-preview cards. It packages the brand's design tokens, vendored fonts, official logo
-files, a slide theme, a library of 13 slide layouts, three promo templates, and a script that renders HTML to PNG
-and audits the result.
+files, a slide theme, a library of 18 slide layouts (including video, tables, horizontal bars and a missing-asset
+placeholder), a typesetting helper, three promo templates, and a script that renders HTML to PNG and audits the result.
 
 The look is a "monochrome editorial" register: pale sage paper, near-black ink, the brand green `#238343` as the
 only bright colour, a restrained oxblood second colour, Fraunces serif display type with Outfit labels, hairline
@@ -19,11 +19,11 @@ structure, no shadows.
 skills/superlinear-brand/      the skill (install this folder)
   SKILL.md                     root skill: workflow, hard rules, index of references
   references/                  tokens & type, logo usage, slide theme, layouts, promo formats, pitfalls, verification
-  theme/                       tokens.css, layouts.css, canvas.css, promo.css, fonts/, logos/, placeholders/
+  theme/                       tokens.css, layouts.css, canvas.css, promo.css, typeset.js, fonts/, logos/, placeholders/
   templates/                   promo_16x9.html, event_cover_2_8.html, og_1200x630.html
-  scripts/render.py            HTML -> PNG with an offline / overflow / wrap / safe-area audit
+  scripts/render.py            HTML -> PNG with an offline / overflow / wrap / safe-area / SVG-label / typography audit
 examples/
-  shipping_small_models/       13-slide presentation-skill canvas deck, one slide per layout, screenshots
+  shipping_small_models/       18-slide presentation-skill canvas deck, one slide per layout, screenshots
   promo/                       rendered templates + a Chinese 16:9 example
 docs/                          prd.md, rfc.md, working.md
 ```
@@ -39,8 +39,9 @@ or register skills/superlinear-brand/SKILL.md in my workspace's skill index. Exp
 ```
 
 The skill is self-contained: the theme, fonts, logos, templates and script all live under
-`skills/superlinear-brand/`. For slides it composes with the presentation skill (`presentation_skill` package):
-that skill provides the HTML canvas deck engine and workflow, this one provides the visual layer.
+`skills/superlinear-brand/`. For slides it composes with the presentation skill
+(<https://github.com/grapeot/presentation_skill>): that skill provides the HTML canvas deck engine and workflow, this
+one provides the visual layer.
 
 ## Quick start
 
@@ -58,11 +59,15 @@ uv pip install --python .venv/bin/python -r requirements.txt
 ```
 
 The script exits non-zero if a page makes an external request, logs a console error, fails to load a font or image,
-lets text leave the canvas or the safe area, wraps a title past its `data-max-lines`, or crops a headshot.
+lets text leave the canvas or the safe area, wraps a title past its `data-max-lines`, splits a number from its unit,
+lets SVG labels overlap or run out of their boxes, crops a headshot or recording, or (with `--final`) still contains
+a placeholder. It warns about straight quotes and scaffold class-name collisions.
 
 To use the theme in a new deck, scaffold an HTML canvas deck with the presentation skill, copy
 `skills/superlinear-brand/theme/` into it as `brand/`, and follow
-[references/slide_theme.md](skills/superlinear-brand/references/slide_theme.md).
+[references/slide_theme.md](skills/superlinear-brand/references/slide_theme.md) (including the one-line server patch
+for the scaffold's `tools/shoot.py`). In this repository the example deck's `brand/` is a symlink to the skill's
+`theme/`; on a system without symlink support, copy the folder instead.
 
 ## Licence
 

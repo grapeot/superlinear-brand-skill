@@ -38,8 +38,10 @@ slides, promo images, covers, OG cards. Use the web tokens only when you build w
 | `--sa-hatch` | oxblood at 7.5% | Hatching fill for the "expiring" side |
 
 **Meaning, not decoration.** Green marks the point of a frame or the side you recommend; oxblood marks the side you
-reject or the thing that expires. Keep one meaning per colour for the whole deck. A frame with no claim to mark has
-no green except the chrome. Grey was tried as the second colour and read as disabled text; oxblood keeps the
+reject or the thing that expires. Keep one meaning per colour for the whole deck. The slide chrome (running header,
+footer brand line, progress rule) is neutral ink so that green never becomes wallpaper; the short kicker rule is the
+only green that appears on every frame. A frame with no claim to mark has no other green. Someone else's number
+(a competitor, a baseline) is never green, however prominent. Grey was tried as the second colour and read as disabled text; oxblood keeps the
 punchline legible without competing with green.
 
 **Retired:** the April 2026 manual's accents Azure `#0E6EF4` and Maya `#4B96FF` are superseded by the green. The

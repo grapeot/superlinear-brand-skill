@@ -22,22 +22,28 @@ Each template declares its size and safe area in `<meta name="sa:canvas">` and `
 3. Replace `theme/placeholders/headshot.svg` with the speaker's **full square photo** (`img.sa-uncropped`, shown
    whole). Do not crop to the face, do not use `object-fit: cover`, do not add a circle mask. If the photo is not
    square, it letterboxes on the card colour; better, get a square original.
-4. Chinese copy: add `.sa-zh` to the title, subtitle, tag and secondary time line (see `examples/promo/promo_16x9_zh.html`).
+4. Typography: add `<script src="../theme/typeset.js"></script>` in `<head>` (after the stylesheets) to get
+   typographic quotes and unbroken number+unit pairs automatically; the audit warns about both otherwise.
+5. Chinese copy: add `.sa-zh` to the title, subtitle, tag and secondary time line (see `examples/promo/promo_16x9_zh.html`).
    Primary language first; the other language on its own line, never in brackets.
-5. Render: `python scripts/render.py page my_promo.html --out-dir out/` (add `--scale 2` for a 2× export). Fix
+6. Render: `python scripts/render.py page my_promo.html --out-dir out/` (add `--scale 2` for a 2× export). Fix
    every problem the audit reports, then open the PNG and run the checklist in [verification.md](verification.md).
 
 ## Copy rules for promos
 
-- **Title:** the promise or the thing made, at most two lines (`data-max-lines="2"`). 16:9 at 96 px holds about
-  20 Latin characters per line in the 900 px column; the cover at 76 px about 28; Chinese at 76 px about 11
-  characters per line. Shorten the words before shrinking the type; never go below 64 px on 16:9.
+- **Title:** the promise or the thing made, at most two lines (`data-max-lines="2"`). Measured capacity (Fraunces,
+  best case; plan for ~15% less because lines break at words): 16:9 at 96 px ≈ 25 Latin characters per line in the
+  900 px column, so ≤ ~40 characters in two lines; the cover at 76 px ≈ 37 per line in 1150 px; the OG card at 84 px
+  ≈ 30 per line in 1056 px. Chinese (`.sa-zh`): 16:9 at 76 px ≈ 12 characters per line, cover at 58 px ≈ 19.
+  Shorten the words before shrinking the type; never go below 64 px on 16:9.
 - **Subtitle:** one sentence, one line on the cover.
 - **Kicker:** facts about the format (Live · Online · 60 min). No hype words.
 - **Time:** day, date, time with zones (PT / ET), in the audience's language first.
 - **Tag (top right):** what kind of event (Free live session, Course, Workshop).
 - **Footer (16:9):** brand name, "Make what lasts." centred in green, the site URL. Only real URLs.
 - No emojis, no exclamation marks, no stock photos, no screenshots of the logo.
+- **Green on a promo** is structural only: the kicker rule, the time block's rule, the footer brand line, the cover's
+  bottom band. The title and the photo caption stay ink; there is no second green emphasis on an image this small.
 
 ## Format notes
 

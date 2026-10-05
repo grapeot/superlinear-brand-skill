@@ -1,38 +1,62 @@
 # Verification
 
 A visual is done when the audit passes **and** you have looked at every rendered image at full size against the
-checklist below. The audit catches geometry and offline problems; only looking catches taste.
+checklist below. The audit catches geometry, offline loading and typography; only looking catches taste.
 
 ## 1. Render and audit
 
 ```bash
-# promo pages (size and safe area come from the page's <meta> tags)
-python scripts/render.py page path/to/promo.html [more.html …] --out-dir out/
+# promo pages (size and safe area come from the page's <meta> tags); PNGs land next to the pages unless --out-dir
+python scripts/render.py page path/to/promo.html [more.html …] [--out-dir out/] [--scale 2] [--final]
 
-# a presentation-skill canvas deck: every slide at its last step (or its `print` step),
-# NN_<id>.png per slide + contact_sheet.jpg
-python scripts/render.py deck path/to/deck --out path/to/deck/screenshots
+# a presentation-skill canvas deck: every slide at its last step (or its `print` step) → NN_<id>.png + contact_sheet.jpg
+python scripts/render.py deck path/to/deck [--out path/to/deck/verification/brand_r1] [--all-steps] [--final]
 ```
 
-The JSON report lists, per page or slide, any of:
+Deck mode serves the **deck directory** on a loopback port (with a deep listen backlog, see
+[pitfalls.md](pitfalls.md)) and writes to `<deck>/verification/brand/` unless `--out` is given; give each review round
+its own `--out`, as the presentation skill does. Pass `--root DIR` only if the deck links files above its own
+directory (it then serves `DIR`). `--all-steps` captures every step of every slide (`NN_<id>_<step>.png`), like the
+presentation skill's `shoot.py`. Captures hide the navigator button and show each `<video>` at its poster.
+
+**Problems** (exit code 1):
 
 | Key | Meaning |
 |---|---|
 | `console_errors`, `failed_requests` | Something did not load or threw |
 | `external_requests` | A request left `file://` / the loopback server (CDN fonts, analytics, remote images) |
 | `font_errors` | A vendored font failed to load (wrong path) |
-| `offcanvas` | Text or an image extends past the canvas (page mode) or past its frame (deck mode) |
-| `unsafe` | Text or an image is outside the `sa:safe` area |
+| `offcanvas` | HTML text, an image or a video extends past the canvas (page mode) or past its frame (deck mode) |
+| `unsafe` | ... is outside the `sa:safe` area (`[data-bleed]` exempt) |
 | `wrapped` | A `[data-max-lines]` element wrapped to more lines than allowed |
-| `images` | An `<img>` did not load |
-| `cropped` | An `img.sa-uncropped` is cropped or stretched |
+| `number_unit_break` | A line break falls between a number and its unit ("115" / "ms") |
+| `images` | An `<img>` did not load, or a `<video>` has no poster |
+| `cropped` | An `img`/`video.sa-uncropped` is cropped (`object-fit: cover`) or stretched |
+| `svg_text_outside` | SVG `<text>` extends past its `<svg>` box |
+| `svg_text_overflow` | SVG `<text>` whose centre lies inside a `<rect>` is not fully inside that rect (a label running out of its box) |
+| `svg_text_overlap` | Two SVG `<text>` boxes overlap (an axis title on a tick label, two value labels) |
+| `unprocessed_markup` | `==` emphasis markers are visible (`typeset.js` not loaded, or used inside `.type`) |
+| `placeholders` | `.sa-placeholder` elements, only with `--final` |
 | `missing_slots` | (deck) a presentation-skill copy slot was not filled |
 
-Exit code 0 means none of these. `fonts_loaded` lists the faces actually used, a quick check that the brand fonts
-(not fallbacks) rendered.
+**Warnings** (reported under `warnings`, exit code unaffected):
 
-For decks, also run the presentation skill's own `tools/shoot.py` (every step, not only the last) and its critic
-round; this audit does not replace them.
+| Key | Meaning |
+|---|---|
+| `straight_quotes` | `'` or `"` in visible text (load `typeset.js`, or type ’ “ ”) |
+| `number_unit_space` | A breakable space between a number and its unit; it may break after an edit (use U+00A0 or `typeset.js`) |
+| `scaffold_class` | An element inside `.sa-pad` uses a class the scaffold's `deck.css` styles globally (`.note`, `.role` …) |
+| `placeholders` | Without `--final`: the list of missing assets still in the draft |
+
+`fonts_loaded` lists the faces actually used, a quick check that the brand fonts (not fallbacks) rendered.
+
+**What the audit does not check:** SVG text against lines, paths, circles or images (only against other text and
+rects); HTML elements overlapping each other (only against the frame, canvas and safe area); text over an image; colour
+use and contrast of new pairings; whether a poster is representative; anything about taste. Elements marked
+`data-audit-skip` are excluded from the SVG checks. Use it for deliberate overlaps only, and say why in a comment.
+
+For decks, also run the presentation skill's own `tools/shoot.py` (patched as in [slide_theme.md](slide_theme.md)
+step 7) and its critic round; this audit does not replace them.
 
 ## 2. Look at every frame
 
@@ -40,9 +64,10 @@ Open each PNG (for decks, the contact sheet first, then every slide at full size
 
 **Brand**
 - [ ] Paper is the pale sage `#eef0ec` (or the card colour), not white, not yellow.
-- [ ] Green appears only where it marks something (kicker rule, the point, the recommended side, the highlighted
-      data, the button, the brand line, the progress rule). At most one green emphasis inside the content per frame.
-- [ ] Oxblood only for the rejected / expiring side, never decoration.
+- [ ] Green budget: the chrome is neutral; structural marks (kicker rule, CTA bullet dashes, the timeline's current
+      dot, a recommended table column's header rule) do not count; beyond them at most **one** green emphasis per frame
+      (the claim's phrase, the recommended card, your own number or bar, the button). Nobody else's number is green.
+- [ ] Oxblood only for the rejected / expiring side or a stated cost, never decoration.
 - [ ] No shadows, gradients, glows, icon grids, stock photos.
 - [ ] Logo: correct file (black on light), not stretched, not recoloured, clear space respected, once per frame.
 
@@ -51,16 +76,18 @@ Open each PNG (for decks, the contact sheet first, then every slide at full size
 - [ ] No title wrapped unexpectedly, no orphaned single word on a title's last line, no clipped descenders.
 - [ ] Chinese glyphs render in the intended serif or sans, punctuation not orphaned at a line start.
 - [ ] Nothing below 20 px except source lines and the chrome.
-- [ ] Straight quotes replaced by typographic ones (’ “ ”) in display text.
+- [ ] Typographic quotes (’ “ ”) and unbroken number+unit pairs.
 
 **Layout**
 - [ ] Nothing overlaps; nothing touches the frame edge or the running header and footer.
+- [ ] Diagram and chart labels clear of lines, bars and each other (the audit only checks text against text and rects).
 - [ ] Event covers: everything inside the safe area; still legible when the image is scaled to 600 px wide.
-- [ ] Headshots whole (no cropped head or shoulders), in a hairline frame.
+- [ ] Headshots, screenshots and recordings whole; dark media in a tight dark frame, not on a light mat.
 - [ ] Every data slide has a source line; every number traces to a source.
 
 **Content**
-- [ ] No placeholder text left (`Speaker Name`, `Month DD`, `EDIT`, the silhouette) in a final image.
+- [ ] No placeholder text or `.sa-placeholder` left in a final image (`--final`).
+- [ ] Kicker and running header say different things.
 - [ ] No private data: emails, internal links, student names, IDs.
 
 ## 3. Contrast spot check

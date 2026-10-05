@@ -2,9 +2,9 @@
 
 ## Summary
 
-A layered package: **tokens → CSS theme → layout library → templates → render/verify loop**, exposed through one
+A layered package: **tokens → CSS theme → layout library (+ typesetting helper) → templates → render/verify loop**, exposed through one
 root skill (`skills/superlinear-brand/SKILL.md`) with focused references. Slides reuse the presentation skill's HTML
-canvas engine untouched; this skill only adds stylesheets and chrome markup. Promo images are single HTML pages
+canvas engine (<https://github.com/grapeot/presentation_skill>) untouched; this skill only adds stylesheets and chrome markup. Promo images are single HTML pages
 rendered by Playwright.
 
 ## Sources and how they were used
@@ -54,11 +54,22 @@ predictable.
 
 ### 3. Layout library (`theme/layouts.css`)
 
-Type primitives plus 13 layouts, each a `.sa-pad` box (x 160–1760, y 140–950, the presentation skill's content box)
+Type primitives plus 18 layouts and patterns, each a `.sa-pad` box (x 160–1760, y 130–950, the presentation skill’s content box)
 with a layout class. Layouts use flex/grid inside the box instead of per-element pixel positions, so an agent can
 change copy length without recomputing coordinates. They are engine-agnostic: they work inside a canvas `.frame` or a
 plain `.sa-slide` section. Inner element names avoid the scaffold's global class names (a collision with `.role`
 produced a stray bordered box during development).
+
+### 3b. Typesetting helper (`theme/typeset.js`)
+
+The presentation skill's copy workflow fills `data-slot` elements with `textContent`, which cannot carry markup, so
+the claim layout's green phrase was unavailable to slotted copy. Rather than change the engine, `typeset.js` is loaded
+between `copy.js` and `engine.js`: it typesets the strings in `window.COPY` (typographic quotes, no-break space between
+a number and its unit) before the engine runs, and after the engine has filled the slots it turns `==phrase==` into
+`<span class="sa-em">` by building DOM nodes (never `innerHTML`). `==` was chosen because it is Markdown's highlight
+syntax, rare in prose, and unambiguous with the notes' `**bold**`. The engine's typewriter (`.type`) splits text into
+letters first, so emphasis and no-break pairs are not supported there; the limit is documented and the audit catches
+leftover markers.
 
 ### 4. Templates (`templates/`)
 
@@ -70,9 +81,14 @@ Plain HTML with `EDIT` comments on the lines meant to change, a `<meta name="sa:
 One Playwright script, two modes. `page` opens each HTML file over `file://` at its declared size; `deck` serves the
 repository (or a given root) on a loopback port and prints every slide at its last (or `print`) step through the
 engine's `deckGoto`. Transitions are disabled before capture. Audits: console and page errors, failed requests,
-requests outside `file://`/loopback, font load errors, text or images leaving the canvas or frame, safe-area
-violations, `data-max-lines` violations (counted from the text's client rects), images not loaded, `sa-uncropped`
-images cropped or stretched. Non-zero exit on any problem. Deck mode writes a contact sheet. The audit catches
+requests outside `file://`/loopback, font load errors, text, images or videos leaving the canvas or frame, safe-area
+violations, `data-max-lines` violations (counted from the text's client rects), a line break between a number and its
+unit, images not loaded or videos without a poster, `sa-uncropped` media cropped or stretched, and inside every inline
+SVG: text outside the SVG box, text running out of the rect its centre sits in, and text overlapping other text.
+Warnings (non-fatal): straight quotes, breakable number+unit spaces, scaffold global class names inside brand layouts,
+and placeholders (fatal with `--final`). Deck mode serves the deck directory (not a repository root) with a listen
+backlog of 128, can capture every step (`--all-steps`), hides the navigator button and resets videos to their
+posters before each capture, and writes a contact sheet. The audit catches
 geometry; the skill's verification checklist covers what only eyes catch.
 
 ## Composition with the presentation skill
@@ -89,13 +105,29 @@ The deck's `visual_guideline.md` (required by the presentation skill) names this
 
 ## Reference implementation: why a real canvas deck, not a static gallery
 
-A static gallery of 13 `.sa-slide` sections would have been simpler (no Reveal, no engine). It was rejected because
+A static gallery of `.sa-slide` sections would have been simpler (no Reveal, no engine). It was rejected because
 the main claim of the skill is that the theme drops into a presentation-skill deck unchanged; a gallery would leave
 that claim untested, and agents learn most from an example in the exact shape they will build. The cost was small:
 the scaffold's `engine.js` and `deck.css` are copied as is (only the font block of `deck.css` removed so fonts come
 from the theme), Reveal.js is vendored (≈350 KB, MIT), and frames are hand-written instead of generated by
-`build_index.py`. The deck links the theme at `../../skills/superlinear-brand/theme/` to avoid duplicating fonts and
-logos in the repo; real decks copy the theme in as `brand/`.
+`build_index.py`. The deck reaches the theme through `brand/`, exactly as a real deck does; in this repository
+`brand/` is a symlink to the skill's `theme/` so fonts and logos are not duplicated. (The first version linked
+`../../skills/…` directly, which a tester copied verbatim into a real deck where it broke.)
+
+## Chrome colour budget
+
+The first version put green in the footer brand line and the progress rule as well as the kicker rule. In a real
+20-slide deck an independent critic read the green as decoration at thumbnail scale, which undermines the rule that
+green marks the point. The chrome is now neutral ink (`--sa-brandline-color`, `--sa-progress-color`, both overridable),
+the kicker rule is the single structural green, the big-number stat is ink unless marked `.accent`, and the docs state
+a per-frame budget: structural marks are fixed, one content emphasis.
+
+## Media
+
+Recordings are first-class: `.sa-frame` accepts `<video>`, `.sa-frame.tight.dark` removes the light mat around dark
+footage, `video.sa-uncropped` is audited like images, and every video needs a representative poster because
+screenshots and the PDF print the poster. The example uses two synthetic WebM recordings generated by a script
+(VP9 rather than H.264 because headless Chromium builds often lack H.264).
 
 ## Illustrations
 
@@ -119,7 +151,7 @@ was not needed to demonstrate the plate treatment, which `canvas.css` and `.sa-p
 
 ## Risks and open points
 
-- Logo licensing: the logos are included under a trademark notice; the owner should confirm public redistribution.
+- Logo licensing: the owner confirmed that the logos may be published under the trademark carve-out in `LICENSE`.
 - If the logo set is updated, replace the files in `theme/logos/` (keeping the file names) and re-render the
   examples.
 - CJK rendering depends on installed system fonts at render time.

@@ -45,11 +45,15 @@ Secondary users are the people who review those visuals and want them right on t
 - **Logos:** official primary (black, white, compact) and icon SVGs, favicon; usage rules from the brand manual.
 - **Slide theme:** a CSS layer for presentation-skill canvas decks (token mapping, chrome with logo and brand line,
   kicker rule, flat cards, plate treatment).
-- **Layouts:** cover, section opener, one-claim headline, two-column compare, numbered steps, big-number stat,
-  inline-SVG chart, quote, figure with caption, timeline, speaker bio with uncropped headshot, CTA / course promo,
-  Q&A / closing.
+- **Layouts:** cover (with a long-title variant), section opener, one-claim headline, two-column compare, numbered
+  steps, big-number stat, inline-SVG chart (with takeaway row), horizontal bars with a side note, quote, figure with
+  caption, media (video), media pair, table, timeline, speaker bio with uncropped headshot, CTA / course promo, Q&A /
+  closing, and a missing-asset placeholder.
+- **Copy-slot compatibility:** emphasis and typography for text that arrives through the presentation skill's
+  `data-slot` copy.
 - **Promo templates:** 16:9 (1920×1080), event cover 2.8:1 (2100×750) with safe area, OG (1200×630).
-- **Render and audit:** one script for promo pages and canvas decks, with a contact sheet.
+- **Render and audit:** one script for promo pages and canvas decks, with a contact sheet; geometry checks inside
+  inline SVG; typographic checks; placeholder gating for final renders.
 - **Reference implementation:** an example canvas deck (one slide per layout) and rendered promo examples,
   including a Chinese promo.
 
@@ -57,7 +61,10 @@ Secondary users are the people who review those visuals and want them right on t
 
 - `render.py page` on the three templates and the Chinese example, and `render.py deck` on the example deck, exit 0:
   zero console errors, zero failed or external requests, all fonts loaded, nothing off-canvas or outside safe areas,
-  no `data-max-lines` violations.
+  no `data-max-lines` violations, no SVG label collisions or overflows, no number+unit breaks. The deck's only
+  warning is its deliberate placeholder.
+- A fresh agent can follow `slide_theme.md` step by step, including the presentation skill's own `shoot.py`, without
+  a failure the docs did not warn about.
 - Every rendered image has been inspected at full size against `references/verification.md`.
 - `SKILL.md` has frontmatter with triggers for slides, on-brand decks, brand style, promo images and event covers,
   and links every reference.

@@ -19,6 +19,10 @@
   --gold: var(--sa-green);
   --serif: var(--sa-serif); --sans: var(--sa-label); --mono: var(--sa-mono);
 }
+/* chrome colour budget: the chrome is neutral so that green inside a frame always means "this is the point".
+   The short kicker rule is the one structural green mark. For a brand-forward deck (a short promo reel) you may
+   set these two to var(--sa-green-text) / var(--sa-green); then keep content green to the single emphasis. */
+:root { --sa-brandline-color: var(--sa-ink-2); --sa-progress-color: var(--sa-ink-2); }
 html, body, #stage { background: var(--sa-paper); }
 body { color: var(--sa-ink); }
 #grain { display: none; }                       /* clean paper: no noise layer */
@@ -30,9 +34,9 @@ body { color: var(--sa-ink); }
 #chrome #part { color: var(--sa-ink-2); }
 #chrome #folio { font-family: var(--sa-mono); letter-spacing: .06em; }
 #chrome .rule { background: var(--sa-rule); }
-#chrome .progress { background: var(--sa-green); height: 2px; bottom: 67px; }
+#chrome .progress { background: var(--sa-progress-color); height: 2px; bottom: 67px; }
 #chrome .sa-brandline { position: absolute; left: 0; right: 0; bottom: 40px; text-align: center; pointer-events: none;
-  font: 600 15px/1 var(--sa-label); letter-spacing: .24em; text-transform: uppercase; color: var(--sa-green-text); }
+  font: 600 15px/1 var(--sa-label); letter-spacing: .24em; text-transform: uppercase; color: var(--sa-brandline-color); }
 
 /* ---------- type: Fraunces for display and reading text, Outfit for labels ---------- */
 .display, .specimen .name, .timeline .tn, .numeral, .station, .wcard, .pstage, .role .rname, .mspec .mname {
@@ -75,4 +79,8 @@ body { color: var(--sa-ink); }
 
 /* ---------- navigator HUD and button in brand colours ---------- */
 #navhud { box-shadow: none; border-color: var(--sa-rule); }
+/* the navigator button (bottom right, M key): a quiet hairline control, not part of the slide */
+#navbtn { background: var(--sa-paper); border: 1px solid var(--sa-rule); color: var(--sa-ink-3); opacity: .45; box-shadow: none; }
+#navbtn:hover, body.nav-open #navbtn { opacity: 1; color: var(--sa-ink); }
+body.sa-no-navbtn #navbtn { display: none; }        /* add this class to <body> for recordings or kiosk playback */
 body.nav-open .frame::after { border-color: var(--sa-green); }

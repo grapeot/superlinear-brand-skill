@@ -1,0 +1,78 @@
+/* Superlinear Academy theme for presentation-skill HTML canvas decks ("monochrome editorial").
+   Link order in index.html, after the scaffold's own stylesheet:
+     <link rel="stylesheet" href="css/deck.css">          (scaffold: engine layout, motion vocabulary)
+     <link rel="stylesheet" href="brand/tokens.css">      (fonts + brand tokens)
+     <link rel="stylesheet" href="brand/layouts.css">     (optional: the .sa-* layout library)
+     <link rel="stylesheet" href="brand/canvas.css">      (this file: re-skins the scaffold and the chrome)
+   It changes only paint and type; it never moves frames, the camera or the click logic.
+
+   Chrome markup this file expects inside #chrome (see references/slide_theme.md):
+     <img class="sa-chrome-logo" src="brand/logos/primary-black-compact.svg" alt="Superlinear Academy">
+     <div class="sa-brandline">Make what lasts.</div>                                                      */
+
+/* ---------- map the scaffold's tokens onto the brand ---------- */
+:root {
+  --paper: var(--sa-paper); --paper-2: var(--sa-paper-2); --card: var(--sa-card);
+  --ink: var(--sa-ink); --ink-2: var(--sa-ink-2); --ink-3: var(--sa-ink-3); --rule: var(--sa-rule);
+  --problem: var(--sa-green); --problem-soft: var(--sa-accent-soft);       /* "lasting" / the point you are making */
+  --patch: var(--sa-second); --patch-soft: var(--sa-second-soft);          /* "expiring" / the anti-pattern */
+  --gold: var(--sa-green);
+  --serif: var(--sa-serif); --sans: var(--sa-label); --mono: var(--sa-mono);
+}
+html, body, #stage { background: var(--sa-paper); }
+body { color: var(--sa-ink); }
+#grain { display: none; }                       /* clean paper: no noise layer */
+
+/* ---------- chrome: running header and footer, like a printed publication ---------- */
+#chrome .sa-chrome-logo { position: absolute; left: 96px; top: 31px; height: 34px; width: auto; display: block; }
+#chrome .run { font-family: var(--sa-label); font-weight: 500; letter-spacing: .16em; color: var(--sa-ink-3); }
+#chrome .run.top > span:first-child { padding-left: 176px; }   /* clear the logo plus its clear space */
+#chrome #part { color: var(--sa-ink-2); }
+#chrome #folio { font-family: var(--sa-mono); letter-spacing: .06em; }
+#chrome .rule { background: var(--sa-rule); }
+#chrome .progress { background: var(--sa-green); height: 2px; bottom: 67px; }
+#chrome .sa-brandline { position: absolute; left: 0; right: 0; bottom: 40px; text-align: center; pointer-events: none;
+  font: 600 15px/1 var(--sa-label); letter-spacing: .24em; text-transform: uppercase; color: var(--sa-green-text); }
+
+/* ---------- type: Fraunces for display and reading text, Outfit for labels ---------- */
+.display, .specimen .name, .timeline .tn, .numeral, .station, .wcard, .pstage, .role .rname, .mspec .mname {
+  font-family: var(--sa-serif); font-optical-sizing: auto; font-variation-settings: "SOFT" 30, "WONK" 0; }
+.display { font-weight: 400; letter-spacing: -.02em; }
+.h1 { letter-spacing: -.025em; }
+.kicker, .specimen .tag, .rcard .tag, .mspec .tag, .defcard .tag, .jtag, .label { font-family: var(--sa-label); }
+.kicker { letter-spacing: .2em; }
+/* the section marker: a short green rule before every frame-level kicker */
+.frame > .kicker::before { content: ""; position: absolute; left: -38px; top: .45em; width: 24px; height: 3px; background: var(--sa-green); }
+.counter, .source { font-family: var(--sa-mono); }
+
+/* ---------- cards: hairline, flat, no shadows; the lasting side keeps its green bar ---------- */
+.specimen .half, .rcard, .term, .role { box-shadow: none; }
+.specimen .frameline { border-color: var(--sa-rule); }
+.specimen.split .half.l, .specimen.rev.split .half.r, .rcard { box-shadow: inset 6px 0 0 var(--sa-green); }
+.specimen.split .half.r { background: repeating-linear-gradient(135deg, var(--sa-hatch) 0 2px, transparent 2px 11px), var(--sa-card); }
+.specimen.rev.split .half.l { box-shadow: none; background: repeating-linear-gradient(45deg, var(--sa-hatch) 0 2px, transparent 2px 11px), var(--sa-card); }
+.mspec .mpatch, .slab, .constraint, .defcard.pack { background: repeating-linear-gradient(135deg, var(--sa-hatch) 0 2px, transparent 2px 11px), var(--sa-card); }
+.window .wfill { background: repeating-linear-gradient(135deg, rgba(143, 58, 46, .12) 0 2px, transparent 2px 10px); }
+.trace .hl.lit { background: var(--sa-second-soft); }
+.book { filter: none; }
+.veil { background: linear-gradient(180deg, transparent 0%, var(--sa-paper) 35%); }
+.numeral { color: var(--sa-ink); opacity: .05; }
+.note, .qa .q, .quote { border-left-color: var(--sa-green); }
+
+/* ---------- plates: neutral grey ink, crisp on the sage paper ---------- */
+.plate img, .mspec .mhead img, .book img { filter: grayscale(1) contrast(1.08) brightness(.92); }
+
+/* ---------- inline SVG written against the scaffold's literal colours: remap onto the brand ---------- */
+[stroke="#23407a"] { stroke: var(--sa-green); }  [fill="#23407a"] { fill: var(--sa-green); }
+[stroke="#b6422a"] { stroke: var(--sa-second); } [fill="#b6422a"] { fill: var(--sa-second); }
+[stroke="#1b2130"] { stroke: var(--sa-ink); }    [fill="#1b2130"] { fill: var(--sa-ink); }
+[stroke="#8b8f99"] { stroke: var(--sa-ink-3); }  [fill="#8b8f99"] { fill: var(--sa-ink-3); }
+[fill="#4a5162"] { fill: var(--sa-ink-2); }
+[stroke="#cfc6b3"] { stroke: var(--sa-rule); }
+[fill="#f2ede2"] { fill: var(--sa-paper); }      [fill="#f7f3ea"] { fill: var(--sa-card); }
+[font-family="Inter"] { font-family: var(--sa-sans); }
+[font-family="Fraunces"] { font-family: var(--sa-serif); }
+
+/* ---------- navigator HUD and button in brand colours ---------- */
+#navhud { box-shadow: none; border-color: var(--sa-rule); }
+body.nav-open .frame::after { border-color: var(--sa-green); }

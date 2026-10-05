@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <!-- Neutral headshot placeholder. Replace with the speaker's full square photo; never crop it. -->
+  <rect width="800" height="800" fill="#e5e8e3"/>
+  <circle cx="400" cy="318" r="138" fill="#bfc5bc"/>
+  <path d="M128 800 C140 590 270 512 400 512 C530 512 660 590 672 800 Z" fill="#bfc5bc"/>
+</svg>

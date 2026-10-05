@@ -1,0 +1,66 @@
+/* Superlinear Academy brand tokens.
+   Load this file first; layouts.css, canvas.css and promo.css read these variables.
+   Fonts are vendored next to this file (fonts/, SIL OFL 1.1, see fonts/OFL.txt): nothing is fetched from the network.
+
+   Two palettes live here:
+   - Brand core: the 2026 brand green and the token set used by Superlinear Academy web surfaces.
+   - Editorial theme ("monochrome editorial"): the palette for slides, covers and promo images.
+     Pale sage paper, near-black ink, brand green as the only bright colour, oxblood as a restrained second. */
+
+/* ---------- fonts (Latin subsets; CJK falls through to the system fonts named in the stacks below) ---------- */
+@font-face { font-family: "Fraunces"; src: url(fonts/fraunces-latin-full-normal.woff2) format("woff2"); font-weight: 100 900; font-style: normal; font-display: block;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Fraunces"; src: url(fonts/fraunces-latin-full-italic.woff2) format("woff2"); font-weight: 100 900; font-style: italic; font-display: block;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Outfit"; src: url(fonts/outfit-latin-wght-normal.woff2) format("woff2"); font-weight: 100 900; font-style: normal; font-display: block;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Inter"; src: url(fonts/inter-latin-opsz-normal.woff2) format("woff2"); font-weight: 100 900; font-style: normal; font-display: block;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "JetBrains Mono"; src: url(fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: "JetBrains Mono"; src: url(fonts/jetbrains-mono-latin-500-normal.woff2) format("woff2"); font-weight: 500; font-style: normal; font-display: block; }
+
+:root {
+  /* ---------- brand core ---------- */
+  --sa-green: #238343;          /* THE brand colour. Shapes, rules, bars, large text (>= 24 px). 4.2:1 on paper */
+  --sa-green-text: #22683b;     /* green for text below 24 px (kickers, footer brand line). 5.9:1 on paper */
+  --sa-green-hover: #1d7039;    /* interactive hover on web surfaces */
+  --sa-forest: #183d27;         /* the dark green: a dark stage or a solid band behind white text (10.6:1 with paper) */
+  --sa-green-tint: #dcebdd;     /* pale green fill, used sparingly (a highlighted cell, a chip) */
+  --sa-green-wash: #f0f5ef;     /* lightest green wash */
+  --sa-primary-dark: #1e1e1e;   /* logo ink as shipped in the logo files */
+  --sa-primary-light: #eeeeee;  /* logo light as shipped in the white logo files */
+  /* web surfaces (site, registry, app); use for web UI, not for slides */
+  --sa-web-bg: #eeede8; --sa-web-surface: #f9f8f4; --sa-web-ink: #18201d; --sa-web-muted: #545c57;
+
+  /* ---------- editorial theme: slides, covers, promo images ---------- */
+  --sa-paper: #eef0ec;          /* pale sage page: not white, not yellow paper */
+  --sa-paper-2: #e5e8e3;        /* a recessed band */
+  --sa-card: #f7f8f5;           /* card / photo-frame fill */
+  --sa-ink: #0b0b0b;            /* headlines and body */
+  --sa-ink-2: #363936;          /* secondary text */
+  --sa-ink-3: #646864;          /* labels, captions, running header (4.9:1, the lightest text allowed) */
+  --sa-rule: #d3d7d0;           /* hairlines */
+  --sa-line: #0b0b0b;           /* strong card borders (1.5 px) */
+  --sa-accent: var(--sa-green);
+  --sa-accent-text: var(--sa-green-text);
+  --sa-accent-soft: rgba(35, 131, 67, .08);
+  --sa-second: #8f3a2e;         /* oxblood: the restrained second colour. One meaning per deck (the thing that expires, the anti-pattern) */
+  --sa-second-soft: rgba(143, 58, 46, .08);
+  --sa-hatch: rgba(143, 58, 46, .075);
+
+  /* ---------- type ---------- */
+  /* display + reading serif. Latin: Fraunces. Simplified Chinese falls through to a serif (Song/Ming) face */
+  --sa-serif: "Fraunces", "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", "Iowan Old Style", Georgia, serif;
+  /* labels, kickers, running header, footer brand line */
+  --sa-label: "Outfit", "PingFang SC", "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  /* sans body text (ledes, captions, UI-like text) */
+  --sa-sans: "Inter", "PingFang SC", "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  /* numbers, sources, catalogue numbers, folios */
+  --sa-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+  /* Chinese-first stacks, for elements whose text is mostly CJK */
+  --sa-serif-zh: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --sa-sans-zh: "PingFang SC", "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+
+  --sa-ease: cubic-bezier(.65, 0, .35, 1);
+  --sa-ease-out: cubic-bezier(.22, 1, .36, 1);
+}

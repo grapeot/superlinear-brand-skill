@@ -1,0 +1,86 @@
+/* Superlinear Academy promo images: 16:9 promo, 2.8:1 event cover, 1200x630 OG card.
+   Load order: tokens.css, layouts.css (type primitives: .sa-kicker, .sa-display ...), promo.css.
+   One HTML page = one image. The <body> is the canvas: give it the format class and render it with
+   scripts/render.py page <file.html>. Geometry is in px of the final image. */
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body.sa-promo { position: relative; overflow: hidden; background: var(--sa-paper); color: var(--sa-ink);
+  -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; font-family: var(--sa-sans); }
+body.sa-promo h1, body.sa-promo p, body.sa-promo figure { margin: 0; }
+
+/* ---------- shared pieces ---------- */
+.sa-p-logo { position: absolute; display: block; width: auto; }            /* always an <img> of a shipped logo file */
+.sa-p-tag { position: absolute; font: 600 18px/1 var(--sa-label); letter-spacing: .22em; text-transform: uppercase; color: var(--sa-ink-2); }
+.sa-p-tag.sa-zh { letter-spacing: .3em !important; font-weight: 500; }
+.sa-p-rule { position: absolute; height: 1px; background: var(--sa-rule); }
+.sa-p-title { font-weight: 400; letter-spacing: -.022em; line-height: 1.06; text-wrap: balance; }
+.sa-p-title.sa-zh { font-family: var(--sa-serif-zh); font-weight: 600; letter-spacing: .02em !important; line-height: 1.3; }
+.sa-p-sub { font: 400 34px/1.35 var(--sa-sans); color: var(--sa-ink-2); text-wrap: balance; }
+.sa-p-sub.sa-zh { font-family: var(--sa-sans-zh); }
+.sa-p-when { border-left: 3px solid var(--sa-green); padding: 4px 0 4px 26px; }
+.sa-p-when .primary { font: 500 30px/1.35 var(--sa-sans); color: var(--sa-ink); }
+.sa-p-when .secondary { margin-top: 6px; font: 400 26px/1.4 var(--sa-sans); color: var(--sa-ink-3); }
+.sa-p-when .secondary.sa-zh { font-family: var(--sa-sans-zh); }
+/* headshot: the full square photo in a hairline frame. Never crop a face; letterbox a non-square photo */
+.sa-p-photo .sa-frame { width: 100%; aspect-ratio: 1 / 1; }
+.sa-p-photo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.sa-p-photo figcaption { margin-top: 18px; font: 500 22px/1.3 var(--sa-sans); color: var(--sa-ink-2); }
+.sa-p-photo figcaption .sa-zh { font-family: var(--sa-sans-zh); }
+.sa-p-foot { position: absolute; display: flex; justify-content: space-between; align-items: baseline;
+  font: 500 16px/1 var(--sa-label); letter-spacing: .16em; text-transform: uppercase; color: var(--sa-ink-3); }
+.sa-p-foot .sa-brandline { position: absolute; left: 0; right: 0; text-align: center; font-weight: 600; letter-spacing: .24em; color: var(--sa-green-text); }
+.sa-p-foot .url { font: 500 18px/1 var(--sa-mono); letter-spacing: .02em; text-transform: none; color: var(--sa-ink-2); }
+.sa-p-band { position: absolute; left: 0; right: 0; bottom: 0; background: var(--sa-green); }
+
+/* ======================================================================
+   16:9 promo, 1920x1080 (social post, video title card, slide-deck promo)
+   ====================================================================== */
+body.f-16x9 { width: 1920px; height: 1080px; }
+.f-16x9 .sa-p-logo { left: 96px; top: 34px; height: 40px; }
+.f-16x9 .sa-p-tag { right: 96px; top: 50px; }
+.f-16x9 .sa-p-rule.top { left: 96px; right: 96px; top: 96px; }
+.f-16x9 .sa-p-text { position: absolute; left: 160px; top: 230px; width: 900px; height: 600px; display: flex; flex-direction: column; justify-content: center; }
+.f-16x9 .sa-p-text .sa-kicker { margin-bottom: 34px; }
+.f-16x9 .sa-p-title { font-size: 96px; }
+.f-16x9 .sa-p-title.sa-zh { font-size: 76px; }
+.f-16x9 .sa-p-sub { margin-top: 34px; }
+.f-16x9 .sa-p-when { margin-top: 64px; }
+.f-16x9 .sa-p-photo { position: absolute; right: 160px; top: 230px; width: 600px; }
+.f-16x9 .sa-p-rule.bot { left: 96px; right: 96px; bottom: 76px; }
+.f-16x9 .sa-p-foot { left: 96px; right: 96px; bottom: 40px; }
+
+/* ======================================================================
+   Event cover, 2.8:1, 2100x750 (community event header). Platforms crop and overlay the
+   edges: keep everything inside the safe area (220 px left/right, 60 px top/bottom).
+   ====================================================================== */
+body.f-cover { width: 2100px; height: 750px; }
+.f-cover .sa-p-logo { left: 220px; top: 64px; height: 40px; }
+.f-cover .sa-p-tag { right: 220px; top: 80px; }
+.f-cover .sa-p-text { position: absolute; left: 220px; top: 150px; width: 1150px; height: 470px; display: flex; flex-direction: column; justify-content: center; }
+.f-cover .sa-p-text .sa-kicker { margin-bottom: 24px; padding-left: 38px; }
+.f-cover .sa-p-text .sa-kicker::before { left: 0; }   /* inline rule: a hanging rule would sit in the crop zone */
+.f-cover .sa-p-title { font-size: 76px; }
+.f-cover .sa-p-title.sa-zh { font-size: 58px; }
+.f-cover .sa-p-sub { margin-top: 18px; font-size: 30px; }
+.f-cover .sa-p-when { margin-top: 36px; }
+.f-cover .sa-p-when .primary { font-size: 27px; }
+.f-cover .sa-p-when .secondary { font-size: 23px; }
+.f-cover .sa-p-photo { position: absolute; right: 220px; top: 150px; width: 430px; }
+.f-cover .sa-p-photo figcaption { text-align: right; margin-top: 14px; font-size: 20px; }
+.f-cover .sa-p-band { height: 10px; }
+
+/* ======================================================================
+   Open Graph / link preview card, 1200x630. Shown small: one title, big type, no photo by default.
+   ====================================================================== */
+body.f-og { width: 1200px; height: 630px; }
+.f-og .sa-p-logo { left: 72px; top: 56px; height: 36px; }
+.f-og .sa-p-tag { right: 72px; top: 70px; font-size: 16px; }
+.f-og .sa-p-text { position: absolute; left: 72px; right: 72px; top: 170px; }
+.f-og .sa-p-text .sa-kicker { margin-bottom: 22px; font-size: 17px; }
+.f-og .sa-p-text .sa-kicker::before { left: -34px; width: 20px; }
+.f-og .sa-p-title { font-size: 84px; }
+.f-og .sa-p-title.sa-zh { font-size: 60px; }
+.f-og .sa-p-sub { margin-top: 20px; font-size: 30px; }
+.f-og .sa-p-foot { left: 72px; right: 72px; bottom: 54px; }
+.f-og .sa-p-band { height: 8px; }

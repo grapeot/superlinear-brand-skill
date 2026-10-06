@@ -1,5 +1,15 @@
 # Working log
 
+## 2026-10-06 — internal current-identity setup
+
+- Documented local workflow and ignore rules for the internal six-layer logo pack under
+  `skills/superlinear-brand/theme/logos/private/`; `.local/` holds original downloads.
+- Clarified licensing boundaries and preserved historical eight-layer SVGs for archives and public samples.
+- Added current asset selection to `logo_usage.md`, including App, social, splash and video masters.
+- Green video masters remain on hold (`#24BC57` instead of `#238343`); use approved white masters on dark surfaces
+  and request corrected green source exports rather than recolouring.
+- Root skill supports supplied PNG/SVG assets and prohibits mixing current and historical marks.
+
 ## 2026-10-04 — v0.1
 
 **Done**

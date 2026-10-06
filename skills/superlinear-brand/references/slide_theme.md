@@ -1,5 +1,11 @@
 # The slide theme in a presentation-skill canvas deck
 
+The snippets below use historical public SVGs so the public example runs without the internal pack.
+For current work, install the private six-layer assets and replace **both** the header logo and favicon;
+use `brand/logos/private/logo%20horizontal.png` for the light header and a mark-only PNG for the favicon
+(with `type="image/png"`). Ignore `brand/logos/private/` and private render paths before copying the theme.
+See [logo_usage.md](logo_usage.md) for dark surfaces and the full selection table.
+
 The presentation skill (<https://github.com/grapeot/presentation_skill>) builds an HTML deck as one world canvas
 with a camera: `index.html` holds 1920×1080 frames, `js/deck.js` the slide table, `js/engine.js` the engine (Reveal.js
 underneath for clicks, notes and the speaker view), `css/deck.css` the scaffold's tokens and motion vocabulary,

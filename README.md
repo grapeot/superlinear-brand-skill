@@ -39,10 +39,43 @@ directory (for Claude Code: ~/.claude/skills/superlinear-brand/ or .claude/skill
 or register skills/superlinear-brand/SKILL.md in my workspace's skill index. Expose exactly one root skill.
 ```
 
-The skill is self-contained: the theme, fonts, logos, templates and script all live under
+The public theme, fonts, historical logos, templates and script all live under
 `skills/superlinear-brand/`. For slides it composes with the presentation skill
 (<https://github.com/grapeot/presentation_skill>): that skill provides the HTML canvas deck engine and workflow, this
 one provides the visual layer.
+
+## Getting started: internal logo assets
+
+Current production work uses the official **six-layer** identity pack. This pack is internal-only, is not
+publicly distributed, and is not MIT-licensed. Obtain it through authorized internal team channels; do not
+include the pack or its access links in public pull requests.
+
+The bundled SVGs are historical **eight-layer** marks previously authorized for public distribution. They remain
+available for archival work and public sample templates. The screenshots above demonstrate layouts, not the
+current identity. Do not mix the two generations in a deliverable.
+
+Keep original downloads under `.local/drive/logo/` (ignored) or outside the repository. Copy the pack, retaining
+its original filenames and hierarchy, into the ignored local asset folder:
+
+```bash
+mkdir -p skills/superlinear-brand/theme/logos/private
+cp -R /path/to/internal-logo-pack/. skills/superlinear-brand/theme/logos/private/
+git check-ignore skills/superlinear-brand/theme/logos/private/README.md
+```
+
+This repository ignores both `.local/` and `skills/superlinear-brand/theme/logos/private/`. A copied skill install
+must add its corresponding private asset path to the destination repository's `.gitignore`; a symlinked install
+keeps assets in the owning repository.
+
+Before copying `theme/` into a deck as `brand/`, add `brand/logos/private/` and private render/export paths to that
+project's `.gitignore`. Then replace the default logo `<img>` source with
+`brand/logos/private/logo%20horizontal.png`, preserving proportions and alt text. For promos, adjust the source
+relative to the copied theme location. Use the approved white master on dark backgrounds.
+
+See [logo usage](skills/superlinear-brand/references/logo_usage.md) for the file selection table and the green
+video masters that remain on hold. Do not publish the source pack or commit renders embedding its artwork to a
+public repository. If the pack is absent, request it from the team or use an explicit placeholder; do not fabricate
+the logo or silently fall back to the historical identity.
 
 ## Quick start
 

@@ -38,7 +38,8 @@ directory, written `<skill_dir>` in commands (the folder that contains this `SKI
 | `theme/canvas.css` | Re-skins a presentation-skill canvas deck: scaffold tokens, running header with logo, footer brand line |
 | `theme/promo.css` | Promo canvases: 16:9 (1920×1080), event cover 2.8:1 (2100×750), OG (1200×630) |
 | `theme/fonts/` | Fraunces, Outfit, Inter, JetBrains Mono (Latin subsets, SIL OFL; `OFL.txt`) |
-| `theme/logos/` | Official logo SVGs (trademarks, see `TRADEMARKS.md`) |
+| `theme/logos/` | Historical eight-layer SVGs for archives and public samples (trademarks, see `TRADEMARKS.md`) |
+| `theme/logos/private/` | Current six-layer internal logo pack, installed locally; ignored and not publicly distributed |
 | `theme/placeholders/headshot.svg` | Neutral headshot stand-in |
 | `templates/` | `promo_16x9.html`, `event_cover_2_8.html`, `og_1200x630.html` |
 | `scripts/render.py` | Headless render to PNG + audit (`page` mode for promos, `deck` mode for canvas decks) |
@@ -51,6 +52,14 @@ out exactly as the documented install with the theme at `brand/`, with screensho
 Chinese variant).
 
 ## Workflow
+
+**Current-identity setup.** Obtain the six-layer logo pack through authorized internal channels and install it
+in `theme/logos/private/`. Keep downloads, source assets and private renders out of public Git repositories.
+Copied skill installs must ignore their private asset folder; before copying the theme into a deck, ignore
+`brand/logos/private/` in the destination repo. Replace the template's legacy logo source with the current asset
+chosen from [references/logo_usage.md](references/logo_usage.md). If the pack is absent, request it or use an
+explicit placeholder instead of falling back to historical marks. The source repository's README includes the
+[Getting started instructions](https://github.com/grapeot/superlinear-brand-skill#getting-started-internal-logo-assets).
 
 1. **Identify the output.** Deck → step 2. Promo / cover / OG → step 3. Logo or colour question only → answer from
    [references/logo_usage.md](references/logo_usage.md) or [references/brand_tokens.md](references/brand_tokens.md).
@@ -83,8 +92,10 @@ then `.venv/bin/python -m playwright install chromium` (it falls back to an inst
   anti-pattern). Never decorative. The April 2026 manual's blue accents (Azure, Maya) are retired.
 - **Serif display (Fraunces), Outfit for labels, Inter for sans body, JetBrains Mono for numbers and sources.**
   Chinese falls through to Noto Serif SC / Songti SC (serif) and PingFang SC / Source Han Sans SC (sans).
-- **Logos are `<img>` of the shipped SVG files.** Black on light, white on dark; never recoloured, stretched,
-  outlined, shadowed or rebuilt in CSS; symbol and wordmark scale together; keep clear space.
+- **Logos are `<img>` of supplied PNG or SVG files.** Current work uses the private six-layer identity: green
+  transparent PNG on light, approved white PNG on dark. Public SVGs are historical samples; never mix generations.
+  Never recolour, stretch, outline, shadow or rebuild a logo in CSS; symbol and wordmark scale together; keep clear space.
+  The supplied green logo is an identity exception to the bright-colour budget, not permission for extra decoration.
 - **No shadows, no gradients, no glows, no icon grids, no stock imagery.** Cards are flat with hairlines. Shading is
   hatching.
 - **Headshots, screenshots and recordings are never cropped.** Shown whole (`object-fit: contain`) in a hairline

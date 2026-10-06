@@ -4,3 +4,6 @@ __pycache__/
 .DS_Store
 out/
 **/verification/
+.local/
+# Internal logo packs installed beside the public theme.
+skills/superlinear-brand/theme/logos/private/

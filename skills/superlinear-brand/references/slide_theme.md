@@ -188,12 +188,11 @@ Everything a themed canvas deck needs, in one place (frames normally come from `
   `--problem` (the lasting / main point) → green; `--patch` (the expiring side) → oxblood; `--serif` → Fraunces,
   `--sans` → Outfit, `--mono` → JetBrains Mono.
 - Hides the paper-grain layer (`#grain`): the theme is clean paper.
-- **Chrome, neutral by design:** compact logo at top-left (34 px tall), running header in Outfit 500 letter-spaced,
-  progress rule and centred "Make what lasts." in `--sa-ink-2`, folio in mono. Green in the chrome would appear on
-  every frame and teach the audience that green is decoration; keeping it neutral lets green inside a frame mean
-  "this is the point". The short green rule before each kicker is the one structural green mark. For a short,
-  brand-forward reel you may set `--sa-brandline-color` / `--sa-progress-color` to `var(--sa-green-text)` /
-  `var(--sa-green)` on `:root`.
+- **Chrome:** compact logo at top-left (34 px tall), running header in Outfit 500 letter-spaced,
+  progress rule and centred "Make what lasts." in brand green (`--sa-green`), folio in mono, matching the
+  owner-approved lecture decks. The chrome's green is fixed and appears on every frame, so the audience reads it as
+  structure, like the short green rule before each kicker; green inside a frame still marks one point. For a
+  deliberately quiet deck, set `--sa-brandline-color` / `--sa-progress-color` to `var(--sa-ink-2)` on `:root`.
 - Display text in Fraunces with soft optical sizing; labels in Outfit.
 - Cards flat with hairlines (all shadows removed); the lasting card half keeps its 6 px green inset bar; the expiring
   half keeps oxblood hatching.

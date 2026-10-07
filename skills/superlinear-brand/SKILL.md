@@ -84,8 +84,8 @@ then `.venv/bin/python -m playwright install chromium` (it falls back to an inst
 
 ## Hard rules
 
-- **Brand green `#238343` is the only bright colour, and it marks the point.** The chrome is neutral; the short
-  kicker rule is the only structural green. Inside a frame, green goes on one thing: the claim's key phrase, the
+- **Brand green `#238343` is the only bright colour, and it marks the point.** The chrome carries fixed brand green (the
+  footer brand line and the progress rule) and the short kicker rule is green; these are structural. Inside a frame, green goes on one thing: the claim's key phrase, the
   recommended side, your own number or bar, or the call-to-action button. Someone else's number stays ink. Green
   text under 24 px uses `#22683b` (contrast).
 - **Oxblood `#8f3a2e` is the only second colour,** with one meaning per deck (the thing that expires, the

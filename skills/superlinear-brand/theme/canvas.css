@@ -19,10 +19,10 @@
   --gold: var(--sa-green);
   --serif: var(--sa-serif); --sans: var(--sa-label); --mono: var(--sa-mono);
 }
-/* chrome colour budget: the chrome is neutral so that green inside a frame always means "this is the point".
-   The short kicker rule is the one structural green mark. For a brand-forward deck (a short promo reel) you may
-   set these two to var(--sa-green-text) / var(--sa-green); then keep content green to the single emphasis. */
-:root { --sa-brandline-color: var(--sa-ink-2); --sa-progress-color: var(--sa-ink-2); }
+/* chrome colour: the footer brand line and the progress rule are brand green, as in the owner-approved lecture decks.
+   They are fixed chrome, not content: inside a frame, green still marks one point. For a deliberately quiet deck,
+   set both to var(--sa-ink-2). */
+:root { --sa-brandline-color: var(--sa-green); --sa-progress-color: var(--sa-green); }
 html, body, #stage { background: var(--sa-paper); }
 body { color: var(--sa-ink); }
 #grain { display: none; }                       /* clean paper: no noise layer */

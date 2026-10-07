@@ -1,5 +1,13 @@
 # Working log
 
+## 2026-10-07 — green chrome by default
+
+- `theme/canvas.css`: footer brand line and progress rule default to `--sa-green` (was `--sa-ink-2`), matching the
+  owner-approved lecture deck. Running header unchanged (neutral ink).
+- Updated the rule text in SKILL.md, brand_tokens.md, slide_theme.md, pitfalls.md and verification.md; recorded the
+  reversal and the contrast note in `docs/rfc.md` ("Chrome colour budget").
+- Verified side by side against the approved deck at 1920×1080: brand line and progress rule match.
+
 ## 2026-10-06 — internal current-identity setup
 
 - Documented local workflow and ignore rules for the internal six-layer logo pack under

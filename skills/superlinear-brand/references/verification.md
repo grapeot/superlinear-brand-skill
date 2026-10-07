@@ -75,7 +75,7 @@ Open each PNG (for decks, the contact sheet first, then every slide at full size
 
 **Brand**
 - [ ] Paper is the pale sage `#eef0ec` (or the card colour), not white, not yellow.
-- [ ] Green budget: the chrome is neutral; structural marks (kicker rule, CTA bullet dashes, the timeline's current
+- [ ] Green budget: the chrome's fixed green (footer brand line, progress rule) and the other structural marks (kicker rule, CTA bullet dashes, the timeline's current
       dot, a recommended table column's header rule) do not count; beyond them at most **one** green emphasis per frame
       (the claim's phrase, the recommended card, your own number or bar, the button). Nobody else's number is green.
 - [ ] Oxblood only for the rejected / expiring side or a stated cost, never decoration.

@@ -126,6 +126,13 @@ green marks the point. The chrome is now neutral ink (`--sa-brandline-color`, `-
 the kicker rule is the single structural green, the big-number stat is ink unless marked `.accent`, and the docs state
 a per-frame budget: structural marks are fixed, one content emphasis.
 
+**Revised 2026-10-07 (owner decision).** The owner compared a deck built on the neutral chrome with an approved lecture
+deck that keeps the footer brand line and progress rule in brand green, and chose the green chrome as the default. The
+reasoning: chrome that is identical on every frame reads as structure, not emphasis, so it does not compete with the
+one green point inside a frame. The defaults are now `--sa-green` for both variables; the per-frame content budget
+is unchanged, and a quiet deck can still set both to `--sa-ink-2`. The footer line uses `#238343` at 15 px (about
+4.2:1 on paper), as in the approved deck, rather than `--sa-green-text`; it is a decorative brand line, not body text.
+
 ## Media
 
 Recordings are first-class: `.sa-frame` accepts `<video>`, `.sa-frame.tight.dark` removes the light mat around dark

@@ -38,9 +38,10 @@ slides, promo images, covers, OG cards. Use the web tokens only when you build w
 | `--sa-hatch` | oxblood at 7.5% | Hatching fill for the "expiring" side |
 
 **Meaning, not decoration.** Green marks the point of a frame or the side you recommend; oxblood marks the side you
-reject or the thing that expires. Keep one meaning per colour for the whole deck. The slide chrome (running header,
-footer brand line, progress rule) is neutral ink so that green never becomes wallpaper; the short kicker rule is the
-only green that appears on every frame. A frame with no claim to mark has no other green. Someone else's number
+reject or the thing that expires. Keep one meaning per colour for the whole deck. The slide chrome uses fixed
+brand green in two places, the footer brand line and the progress rule, matching the owner-approved lecture decks; the
+running header stays neutral ink. Together with the short kicker rule these are structural marks the audience learns to
+ignore, so green inside a frame still means the point. A frame with no claim to mark has no other green. Someone else's number
 (a competitor, a baseline) is never green, however prominent. Grey was tried as the second colour and read as disabled text; oxblood keeps the
 punchline legible without competing with green.
 

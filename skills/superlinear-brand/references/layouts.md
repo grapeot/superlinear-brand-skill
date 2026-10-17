@@ -37,13 +37,13 @@ Talk title, promise, speaker and date, with a line illustration. One per deck.
 ```
 The art column is 650 px wide. Use a textless line illustration or an engraving plate, never a photo collage.
 
-**Title capacity** (measured, Fraunces in the 860 px column; word breaks cost about 15%):
+**Title capacity** (measured, Newsreader 600 in the 860 px column; word breaks cost about 15%):
 
 | Title length | Use | Size | Lines |
 |---|---|---|---|
-| up to ~36 characters | `.sa-cover` | 104 px (≈ 22 characters per line at best) | `data-max-lines="2"` |
-| ~37–65 characters | `.sa-cover.long` | 80 px (≈ 27 per line at best) | `data-max-lines="3"` |
-| over ~65 characters | shorten the title; move the rest to the lede | | |
+| up to ~30 characters | `.sa-cover` | 104 px (≈ 18 characters per line at best) | `data-max-lines="2"` |
+| ~31–58 characters | `.sa-cover.long` | 80 px (≈ 23 per line at best) | `data-max-lines="3"` |
+| over ~58 characters | shorten the title; move the rest to the lede | | |
 | Chinese (`.sa-zh` on the h1) | `.sa-cover` | 104 px ≈ 8 characters per line; `.long` ≈ 11 | 2 or 3 |
 
 Do not shrink below 80 px on a cover: the title stops reading as a title. Put subtitles and qualifiers in the lede,
@@ -98,7 +98,7 @@ A procedure or ordered list, 3–5 items, mono numbers, hairline separators. `li
 ```
 
 ## 06 Big-number stat — `07_latency.png`
-One number that carries the slide, in Fraunces Light, with its meaning and source to the right. The number is ink by
+One number that carries the slide, in Newsreader Light (300), with its meaning and source to the right. The number is ink by
 default; add `.accent` to make it green only when it is your own result (the point of the talk). A competitor's or a
 baseline's number stays ink.
 ```html
@@ -108,11 +108,11 @@ baseline's number stays ink.
     <p class="sa-lede">Context</p><div class="sa-source">Source</div></div>
 </div>
 ```
-Up to four characters at 330 px. Fraunces figures have ball terminals (the 4 has a teardrop); that is the face.
+Up to four characters at 330 px. The light weight against the semibold headline is deliberate; keep it.
 
 ## 07 Chart (inline SVG) — `08_accuracy.png`
 Bars, lines or dots drawn as inline SVG with real `<text>`. Only the series the slide is about is green; the rest are
-hairline outlines on card fill. Gridlines in `--sa-rule`, axis in ink. Values in Fraunces, ticks in mono.
+hairline outlines on card fill. Gridlines in `--sa-rule`, axis in ink. Values in Newsreader, ticks in mono.
 ```html
 <div class="sa-pad sa-chart">
   <div><div class="sa-kicker">What is plotted</div><h2 class="sa-display sa-h2">The finding as a sentence</h2></div>

@@ -26,7 +26,7 @@ a real copy). Its `<head>`, `#chrome` and script block can be copied verbatim.
 2. **Copy the theme:** this skill's `theme/` folder → `deck/brand/` (fonts, logos, placeholders and `typeset.js` come
    along, so the deck stays self-contained and offline).
 3. **Fonts: delete the scaffold's `@font-face` block.** `css/deck.css` starts with five `@font-face` lines that load
-   Fraunces, Inter and JetBrains Mono from `vendor/fonts/`; `brand/tokens.css` declares the same families (plus
+   Newsreader, Inter and JetBrains Mono from `vendor/fonts/`; `brand/tokens.css` declares the same families (plus
    Outfit) from `brand/fonts/` with a Latin `unicode-range` so CJK text falls through correctly. Keeping both works,
    but every face is declared twice and the winner depends on load order. Delete the five lines; leave the rest of
    `deck.css` untouched.
@@ -185,7 +185,7 @@ Everything a themed canvas deck needs, in one place (frames normally come from `
 ## What `canvas.css` does
 
 - Maps the scaffold tokens onto the brand: `--paper`, `--card`, `--ink*`, `--rule` → editorial theme;
-  `--problem` (the lasting / main point) → green; `--patch` (the expiring side) → oxblood; `--serif` → Fraunces,
+  `--problem` (the lasting / main point) → green; `--patch` (the expiring side) → oxblood; `--serif` → Newsreader,
   `--sans` → Outfit, `--mono` → JetBrains Mono.
 - Hides the paper-grain layer (`#grain`): the theme is clean paper.
 - **Chrome:** compact logo at top-left (34 px tall), running header in Outfit 500 letter-spaced,
@@ -193,7 +193,7 @@ Everything a themed canvas deck needs, in one place (frames normally come from `
   owner-approved lecture decks. The chrome's green is fixed and appears on every frame, so the audience reads it as
   structure, like the short green rule before each kicker; green inside a frame still marks one point. For a
   deliberately quiet deck, set `--sa-brandline-color` / `--sa-progress-color` to `var(--sa-ink-2)` on `:root`.
-- Display text in Fraunces with soft optical sizing; labels in Outfit.
+- Display text in Newsreader 600 with optical sizing and −0.015 em tracking; labels in Outfit.
 - Cards flat with hairlines (all shadows removed); the lasting card half keeps its 6 px green inset bar; the expiring
   half keeps oxblood hatching.
 - Plates in neutral grey ink (`grayscale(1) contrast(1.08) brightness(.92)`).

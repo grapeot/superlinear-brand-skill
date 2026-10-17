@@ -39,7 +39,7 @@ Secondary users are the people who review those visuals and want them right on t
 
 - **Tokens:** brand core (green `#238343`, text green `#22683b`, forest, tints, web surface tokens) and the editorial
   theme (paper, card, three inks, rule, oxblood), with contrast guidance.
-- **Typography:** Fraunces display/reading, Outfit labels, Inter sans body, JetBrains Mono numbers; vendored WOFF2
+- **Typography:** Newsreader display/reading, Outfit labels, Inter sans body, JetBrains Mono numbers; vendored WOFF2
   with OFL; CJK fallback stacks (Noto Serif SC / Songti SC; PingFang SC / Source Han Sans SC) and rules for glyph
   coverage.
 - **Logos:** official primary (black, white, compact) and icon SVGs, favicon; usage rules from the brand manual.

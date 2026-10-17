@@ -157,8 +157,9 @@ was not needed to demonstrate the plate treatment, which `canvas.css` and `.sa-p
   `fonts-noto-cjk`). The verification step requires looking at CJK renders.
 - **Recoloured green logo mark as the kicker device** (used in some earlier images). Rejected: the brand manual does
   not allow recolouring; the theme's short green rule carries the accent instead.
-- **Albert Sans (the logo typeface) as the text face.** The manual names it; the approved slide look uses Fraunces
-  and Outfit. The logo files carry Albert Sans themselves, so text type stays with the approved theme.
+- **Albert Sans (the logo typeface) as the text face.** The manual names it; the approved slide look uses Newsreader
+  (Fraunces until October 2026) and Outfit. The logo files carry Albert Sans themselves, so text type stays with the
+  approved theme.
 
 ## Risks and open points
 

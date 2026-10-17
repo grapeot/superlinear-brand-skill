@@ -33,10 +33,10 @@ Each template declares its size and safe area in `<meta name="sa:canvas">` and `
 
 ## Copy rules for promos
 
-- **Title:** the promise or the thing made, at most two lines (`data-max-lines="2"`). Measured capacity (Fraunces,
-  best case; plan for ~15% less because lines break at words): 16:9 at 96 px ≈ 25 Latin characters per line in the
-  900 px column, so ≤ ~40 characters in two lines; the cover at 76 px ≈ 37 per line in 1150 px; the OG card at 84 px
-  ≈ 30 per line in 1056 px. Chinese (`.sa-zh`): 16:9 at 76 px ≈ 12 characters per line, cover at 58 px ≈ 19.
+- **Title:** the promise or the thing made, at most two lines (`data-max-lines="2"`). Measured capacity (Newsreader 600,
+  best case; plan for ~15% less because lines break at words): 16:9 at 96 px ≈ 20 Latin characters per line in the
+  900 px column, so ≤ ~34 characters in two lines; the cover at 76 px ≈ 33 per line in 1150 px; the OG card at 84 px
+  ≈ 27 per line in 1056 px. Chinese (`.sa-zh`): 16:9 at 76 px ≈ 12 characters per line, cover at 58 px ≈ 19.
   Shorten the words before shrinking the type; never go below 64 px on 16:9.
 - **Subtitle:** one sentence, one line on the cover.
 - **Kicker:** facts about the format (Live · Online · 60 min). No hype words.

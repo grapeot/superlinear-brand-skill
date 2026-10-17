@@ -67,13 +67,14 @@ Never put text in `#8b8f99` or lighter on the paper (2.8:1).
 
 | Variable | Family | Use |
 |---|---|---|
-| `--sa-serif` | Fraunces (variable, optical sizing) | Display headlines, card bodies, quotes, list items: the reading voice |
+| `--sa-serif` | Newsreader (variable, optical size + weight) | Display headlines, card bodies, quotes, list items: the reading voice |
 | `--sa-label` | Outfit (variable) | Kickers, tags, running header and footer, button labels: letter-spaced uppercase |
 | `--sa-sans` | Inter (variable, opsz) | Ledes, captions, dates, UI-like body text |
 | `--sa-mono` | JetBrains Mono 400/500 | Numbers, folios, source lines, figure numbers, URLs |
 
-Fraunces settings used throughout: `font-optical-sizing: auto; font-variation-settings: "SOFT" 30, "WONK" 0;`,
-weight 400 for display (300 for very large numerals), letter-spacing −0.02 em to −0.025 em on headlines.
+Newsreader settings used throughout: `font-optical-sizing: auto;` (no other variation settings), weight 600 with
+letter-spacing −0.015 em for display headlines and card names, 400 for reading text, quotes and list items, 300 for
+very large numerals (the stat number also fixes `"opsz" 36` so its strokes stay sturdy at 330 px).
 Kickers: Outfit 600, 18 px, letter-spacing 0.2 em, uppercase, `--sa-ink-3`, with a 24×3 px green rule hanging 38 px
 to the left.
 
@@ -88,17 +89,17 @@ characters therefore fall through to the next family in the stack:
 
 | Role | Latin | Simplified Chinese fallback chain |
 |---|---|---|
-| Serif display / reading | Fraunces | Noto Serif SC → Source Han Serif SC → Songti SC → STSong → SimSun |
+| Serif display / reading | Newsreader | Noto Serif SC → Source Han Serif SC → Songti SC → STSong → SimSun |
 | Labels | Outfit | PingFang SC → Source Han Sans SC → Noto Sans SC → Microsoft YaHei |
 | Sans body | Inter | PingFang SC → Source Han Sans SC → Noto Sans SC → Microsoft YaHei |
 
 Rules:
 
-- **Never declare a font stack with only a web font and a generic family** (`"Fraunces", serif`). The generic
+- **Never declare a font stack with only a web font and a generic family** (`"Newsreader", serif`). The generic
   fallback for CJK differs per machine and can be a mismatched face. Use the token stacks.
 - **For mostly-Chinese elements, add `.sa-zh`.** It switches display text to `--sa-serif-zh` at weight 600 and
-  relaxes the negative tracking (negative letter-spacing collides CJK glyphs). Latin words inside the Chinese line
-  still get Fraunces through the unicode-range.
+  relaxes the negative tracking (negative letter-spacing collides CJK glyphs). `--sa-serif-zh` has no Latin web
+  font, so Latin words inside the Chinese line take the CJK serif's own Latin glyphs.
 - **Chinese display sizes run ~20% smaller** than Latin for the same visual weight (CJK glyphs fill the em box):
   96 px Latin ≈ 76 px Chinese.
 - **Chinese uppercase tracking:** labels in Chinese use `letter-spacing: .3em`, no `text-transform`.

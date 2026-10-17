@@ -6,7 +6,7 @@ files, a slide theme, a library of 18 slide layouts (including video, tables, ho
 placeholder), a typesetting helper, three promo templates, and a script that renders HTML to PNG and audits the result.
 
 The look is a "monochrome editorial" register: pale sage paper, near-black ink, the brand green `#238343` as the
-only bright colour, a restrained oxblood second colour, Fraunces serif display type with Outfit labels, hairline
+only bright colour, a restrained oxblood second colour, Newsreader serif display type with Outfit labels, hairline
 structure, no shadows.
 
 | Slides (canvas deck) | 16:9 promo | Event cover 2.8:1 |

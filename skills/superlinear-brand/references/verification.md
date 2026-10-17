@@ -83,7 +83,7 @@ Open each PNG (for decks, the contact sheet first, then every slide at full size
 - [ ] Logo: correct file (black on light), not stretched, not recoloured, clear space respected, once per frame.
 
 **Type**
-- [ ] Headlines in Fraunces, labels in Outfit, numbers in mono. No fallback faces (compare with the example renders).
+- [ ] Headlines in Newsreader, labels in Outfit, numbers in mono. No fallback faces (compare with the example renders).
 - [ ] No title wrapped unexpectedly, no orphaned single word on a title's last line, no clipped descenders.
 - [ ] Chinese glyphs render in the intended serif or sans, punctuation not orphaned at a line start.
 - [ ] Nothing below 20 px except source lines and the chrome.

@@ -38,11 +38,10 @@ body { color: var(--sa-ink); }
 #chrome .sa-brandline { position: absolute; left: 0; right: 0; bottom: 40px; text-align: center; pointer-events: none;
   font: 600 15px/1 var(--sa-label); letter-spacing: .24em; text-transform: uppercase; color: var(--sa-brandline-color); }
 
-/* ---------- type: Fraunces for display and reading text, Outfit for labels ---------- */
+/* ---------- type: Newsreader for display and reading text, Outfit for labels ---------- */
 .display, .specimen .name, .timeline .tn, .numeral, .station, .wcard, .pstage, .role .rname, .mspec .mname {
-  font-family: var(--sa-serif); font-optical-sizing: auto; font-variation-settings: "SOFT" 30, "WONK" 0; }
-.display { font-weight: 400; letter-spacing: -.02em; }
-.h1 { letter-spacing: -.025em; }
+  font-family: var(--sa-serif); font-optical-sizing: auto; }
+.display { font-weight: 600; letter-spacing: -.015em; }
 .kicker, .specimen .tag, .rcard .tag, .mspec .tag, .defcard .tag, .jtag, .label { font-family: var(--sa-label); }
 .kicker { letter-spacing: .2em; }
 /* the section marker: a short green rule before every frame-level kicker */
@@ -75,7 +74,7 @@ body { color: var(--sa-ink); }
 [stroke="#cfc6b3"] { stroke: var(--sa-rule); }
 [fill="#f2ede2"] { fill: var(--sa-paper); }      [fill="#f7f3ea"] { fill: var(--sa-card); }
 [font-family="Inter"] { font-family: var(--sa-sans); }
-[font-family="Fraunces"] { font-family: var(--sa-serif); }
+[font-family="Newsreader"], [font-family="Fraunces"] { font-family: var(--sa-serif); }   /* Fraunces: decks scaffolded before the switch */
 
 /* ---------- navigator HUD and button in brand colours ---------- */
 #navhud { box-shadow: none; border-color: var(--sa-rule); }

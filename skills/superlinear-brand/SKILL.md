@@ -37,7 +37,7 @@ directory, written `<skill_dir>` in commands (the folder that contains this `SKI
 | `theme/typeset.js` | Optional helper: typographic quotes, number+unit no-break ("115 ms"), and `==phrase==` → green emphasis inside copy slots |
 | `theme/canvas.css` | Re-skins a presentation-skill canvas deck: scaffold tokens, running header with logo, footer brand line |
 | `theme/promo.css` | Promo canvases: 16:9 (1920×1080), event cover 2.8:1 (2100×750), OG (1200×630) |
-| `theme/fonts/` | Fraunces, Outfit, Inter, JetBrains Mono (Latin subsets, SIL OFL; `OFL.txt`) |
+| `theme/fonts/` | Newsreader, Outfit, Inter, JetBrains Mono (Latin subsets, SIL OFL; `OFL.txt`) |
 | `theme/logos/` | Historical eight-layer SVGs for archives and public samples (trademarks, see `TRADEMARKS.md`) |
 | `theme/logos/private/` | Current six-layer internal logo pack, installed locally; ignored and not publicly distributed |
 | `theme/placeholders/headshot.svg` | Neutral headshot stand-in |
@@ -90,7 +90,7 @@ then `.venv/bin/python -m playwright install chromium` (it falls back to an inst
   text under 24 px uses `#22683b` (contrast).
 - **Oxblood `#8f3a2e` is the only second colour,** with one meaning per deck (the thing that expires, the
   anti-pattern). Never decorative. The April 2026 manual's blue accents (Azure, Maya) are retired.
-- **Serif display (Fraunces), Outfit for labels, Inter for sans body, JetBrains Mono for numbers and sources.**
+- **Serif display (Newsreader, semibold headlines), Outfit for labels, Inter for sans body, JetBrains Mono for numbers and sources.**
   Chinese falls through to Noto Serif SC / Songti SC (serif) and PingFang SC / Source Han Sans SC (sans).
 - **Logos are `<img>` of supplied PNG or SVG files.** Current work uses the private six-layer identity: green
   transparent PNG on light, approved white PNG on dark. Public SVGs are historical samples; never mix generations.

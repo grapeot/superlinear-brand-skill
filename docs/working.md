@@ -1,5 +1,22 @@
 # Working log
 
+## 2026-10-17 — display face: Newsreader
+
+- The display and reading serif moves from Fraunces to Newsreader (variable, optical size and weight axes, OFL), to
+  match the presentation skill's HTML template. Outfit, Inter, JetBrains Mono and the colours are unchanged.
+- `theme/fonts/`: `newsreader-latin-opsz-{normal,italic}.woff2` from `@fontsource-variable/newsreader` 5.3.0, same
+  Latin `unicode-range`; the Fraunces files are removed; `OFL.txt` names Newsreader.
+- Weights: `.sa-display`, `.display` (canvas), `.sa-p-title` and the compare-card name go to 600 with −0.015 em
+  tracking (the extra −0.025 em on h1 is dropped). Reading text, quotes, step and timeline items stay 400; the stat
+  number and the media-pair numbers stay 300 (the stat keeps a fixed `"opsz" 36`). `SOFT`/`WONK` settings are gone.
+  `canvas.css` remaps SVG `font-family="Newsreader"` as well as the old `"Fraunces"`.
+- Semibold Newsreader sets about 20% fewer characters per line than Fraunces 400; the title capacities in
+  `layouts.md` (cover) and `promo_formats.md` were re-measured. Sizes are unchanged.
+- The example deck's scaffold `css/deck.css` follows the upstream template (`--serif`, `.display`).
+- Verification: `render.py deck` (and `--all-steps`) and `render.py page` on the three templates and the Chinese
+  example exit 0 with Newsreader loaded; warnings only for the deliberate stand-ins. The claim slide's headline now
+  wraps to three lines (its limit). Screenshots and the contact sheet are regenerated.
+
 ## 2026-10-07 — green chrome by default
 
 - `theme/canvas.css`: footer brand line and progress rule default to `--sa-green` (was `--sa-ink-2`), matching the

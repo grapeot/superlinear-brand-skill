@@ -16,9 +16,9 @@
 .sa-kicker::before { content: ""; position: absolute; left: -38px; top: .42em; width: 24px; height: 3px; background: var(--sa-green); }
 .sa-kicker.no-rule::before { display: none; }
 .sa-label { font: 600 16px/1.25 var(--sa-label); letter-spacing: .18em; text-transform: uppercase; color: var(--sa-ink-3); }
-.sa-display { font-family: var(--sa-serif); font-optical-sizing: auto; font-variation-settings: "SOFT" 30, "WONK" 0; font-weight: 400;
-  letter-spacing: -.02em; color: var(--sa-ink); text-wrap: balance; margin: 0; }
-.sa-h1 { font-size: 96px; line-height: 1.04; letter-spacing: -.025em; }
+.sa-display { font-family: var(--sa-serif); font-optical-sizing: auto; font-weight: 600;
+  letter-spacing: -.015em; color: var(--sa-ink); text-wrap: balance; margin: 0; }
+.sa-h1 { font-size: 96px; line-height: 1.04; }
 .sa-h2 { font-size: 64px; line-height: 1.1; }
 .sa-h3 { font-size: 44px; line-height: 1.18; }
 .sa-lede { font: 400 30px/1.42 var(--sa-sans); color: var(--sa-ink-2); margin: 0; text-wrap: pretty; }
@@ -79,7 +79,7 @@ div.sa-placeholder .spec { font: 400 20px/1.4 var(--sa-sans); color: var(--sa-in
 .sa-cover .text { display: flex; flex-direction: column; gap: 0; }
 .sa-cover .sa-kicker { margin-bottom: 34px; }
 .sa-cover .sa-h1 { font-size: 104px; }
-/* long titles (about 37-65 characters): three lines at 80 px. Past ~65 characters, shorten the title (layouts.md) */
+/* long titles (about 31-58 characters): three lines at 80 px. Past ~58 characters, shorten the title (layouts.md) */
 .sa-cover.long .sa-h1 { font-size: 80px; line-height: 1.07; }
 .sa-cover .sa-lede { margin-top: 40px; max-width: 760px; }
 .sa-cover .byline { margin-top: 64px; padding-top: 22px; border-top: 1px solid var(--sa-rule); display: flex; gap: 28px; align-items: baseline; }
@@ -114,7 +114,7 @@ div.sa-placeholder .spec { font: 400 20px/1.4 var(--sa-sans); color: var(--sa-in
 .sa-compare { display: grid; grid-template-rows: auto auto auto; row-gap: 46px; align-content: center; }
 .sa-compare .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: stretch; }
 .sa-compare .sa-card { position: relative; display: flex; flex-direction: column; min-height: 420px; }
-.sa-compare .sa-card .name { font: 400 60px/1.05 var(--sa-serif); font-optical-sizing: auto; letter-spacing: -.02em; color: var(--sa-ink); margin-bottom: auto; padding-bottom: 40px; }
+.sa-compare .sa-card .name { font: 600 60px/1.05 var(--sa-serif); font-optical-sizing: auto; letter-spacing: -.015em; color: var(--sa-ink); margin-bottom: auto; padding-bottom: 40px; }
 .sa-compare .sa-card .sa-read { font-size: 34px; line-height: 1.28; }
 .sa-compare .sa-card .sa-small { margin-top: 18px; }
 .sa-compare .conclusion { font-size: 40px; line-height: 1.25; }
@@ -136,7 +136,7 @@ div.sa-placeholder .spec { font: 400 20px/1.4 var(--sa-sans); color: var(--sa-in
    06 Big-number stat
    ====================================================================== */
 .sa-stat { display: grid; grid-template-columns: auto 1fr; column-gap: 90px; align-items: center; }
-.sa-stat .big { font: 300 330px/.86 var(--sa-serif); font-optical-sizing: none; font-variation-settings: "opsz" 36, "SOFT" 0, "WONK" 0; letter-spacing: -.045em; color: var(--sa-ink); font-variant-numeric: lining-nums; }
+.sa-stat .big { font: 300 330px/.86 var(--sa-serif); font-optical-sizing: none; font-variation-settings: "opsz" 36; letter-spacing: -.045em; color: var(--sa-ink); font-variant-numeric: lining-nums; }
 /* green only when the number is the point you are making (your result), never for someone else's number */
 .sa-stat .big.accent { color: var(--sa-green); }
 .sa-stat .big .unit { font-size: .42em; letter-spacing: -.02em; margin-left: .04em; }
@@ -269,7 +269,7 @@ div.sa-placeholder .spec { font: 400 20px/1.4 var(--sa-sans); color: var(--sa-in
 .sa-pair .items { display: grid; grid-template-columns: 1fr 1fr; column-gap: 56px; align-items: start; }
 .sa-pair .sa-frame { width: 100%; aspect-ratio: 16 / 9; }
 .sa-pair .item .meta { margin-top: 20px; display: grid; grid-template-columns: auto 1fr; column-gap: 28px; align-items: baseline; }
-.sa-pair .item .num { font: 300 76px/1 var(--sa-serif); font-variation-settings: "opsz" 72, "SOFT" 0, "WONK" 0; letter-spacing: -.03em; color: var(--sa-ink); font-variant-numeric: lining-nums; }
+.sa-pair .item .num { font: 300 76px/1 var(--sa-serif); font-optical-sizing: auto; letter-spacing: -.03em; color: var(--sa-ink); font-variant-numeric: lining-nums; }
 .sa-pair .item .num .unit { font-size: .4em; margin-left: .08em; letter-spacing: 0; }
 .sa-pair .item .num.accent { color: var(--sa-green); }
 .sa-pair .item .who { font: 600 16px/1.3 var(--sa-label); letter-spacing: .18em; text-transform: uppercase; color: var(--sa-ink-3); }

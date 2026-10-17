@@ -8,9 +8,9 @@
      Pale sage paper, near-black ink, brand green as the only bright colour, oxblood as a restrained second. */
 
 /* ---------- fonts (Latin subsets; CJK falls through to the system fonts named in the stacks below) ---------- */
-@font-face { font-family: "Fraunces"; src: url(fonts/fraunces-latin-full-normal.woff2) format("woff2"); font-weight: 100 900; font-style: normal; font-display: block;
+@font-face { font-family: "Newsreader"; src: url(fonts/newsreader-latin-opsz-normal.woff2) format("woff2"); font-weight: 200 800; font-style: normal; font-display: block;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Fraunces"; src: url(fonts/fraunces-latin-full-italic.woff2) format("woff2"); font-weight: 100 900; font-style: italic; font-display: block;
+@font-face { font-family: "Newsreader"; src: url(fonts/newsreader-latin-opsz-italic.woff2) format("woff2"); font-weight: 200 800; font-style: italic; font-display: block;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: "Outfit"; src: url(fonts/outfit-latin-wght-normal.woff2) format("woff2"); font-weight: 100 900; font-style: normal; font-display: block;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
@@ -49,8 +49,8 @@
   --sa-hatch: rgba(143, 58, 46, .075);
 
   /* ---------- type ---------- */
-  /* display + reading serif. Latin: Fraunces. Simplified Chinese falls through to a serif (Song/Ming) face */
-  --sa-serif: "Fraunces", "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", "Iowan Old Style", Georgia, serif;
+  /* display + reading serif. Latin: Newsreader (optical size + weight axes). Simplified Chinese falls through to a serif (Song/Ming) face */
+  --sa-serif: "Newsreader", "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", "Iowan Old Style", Georgia, serif;
   /* labels, kickers, running header, footer brand line */
   --sa-label: "Outfit", "PingFang SC", "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
   /* sans body text (ledes, captions, UI-like text) */

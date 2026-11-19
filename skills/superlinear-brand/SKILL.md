@@ -93,7 +93,7 @@ then `.venv/bin/python -m playwright install chromium` (it falls back to an inst
 - **Serif display (Newsreader, semibold headlines), Outfit for labels, Inter for sans body, JetBrains Mono for numbers and sources.**
   Chinese falls through to Noto Serif SC / Songti SC (serif) and PingFang SC / Source Han Sans SC (sans).
 - **Logos are `<img>` of supplied PNG or SVG files.** Current work uses the private six-layer identity: green
-  transparent PNG on light, approved white PNG on dark. Public SVGs are historical samples; never mix generations.
+  transparent PNG on light (`logo horizontal.png` for English; `logo horizontal zh.png` for Chinese videos, slides and covers), approved white PNG on dark. Public SVGs are historical samples; never mix generations.
   Never recolour, stretch, outline, shadow or rebuild a logo in CSS; symbol and wordmark scale together; keep clear space.
   The supplied green logo is an identity exception to the bright-colour budget, not permission for extra decoration.
 - **No shadows, no gradients, no glows, no icon grids, no stock imagery.** Cards are flat with hairlines. Shading is

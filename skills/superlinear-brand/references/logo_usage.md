@@ -13,7 +13,8 @@ Paths below are relative to `theme/logos/private/`. Retain original filenames an
 
 | File | Recommended surface / context |
 |---|---|
-| `logo horizontal.png` | Green transparent horizontal lockup; default on light headers, decks and documents |
+| `logo horizontal.png` | Green transparent horizontal lockup; default on light headers, decks and documents (English) |
+| `logo horizontal zh.png` | Green transparent Chinese horizontal lockup (超线性学院); default on light headers, slides, covers and videos for Chinese-language deliverables |
 | `logo horizontal 2.png` | White horizontal lockup on a green tile; self-contained brand panels |
 | `logo vertical.png` | Green transparent vertical lockup; light square or vertical layouts |
 | `logo vertical 2.png` | White vertical lockup on a green tile; large brand panels, not small avatars |
@@ -29,7 +30,7 @@ Paths below are relative to `theme/logos/private/`. Retain original filenames an
 
 All three `*_green.png` video masters are **on hold**: their green is `#24BC57`, not canonical `#238343`.
 Request corrected source exports; do not patch them by recolouring. Video masters are tightly cropped around
-the artwork, so the layout must supply clear space. Use the supplied green PNG on light surfaces and approved
+the artwork, so the layout must supply clear space. Use the supplied green PNG on light surfaces (`logo horizontal zh.png` for Chinese-language videos, slides and covers; `logo horizontal.png` for English) and approved
 white PNG on dark surfaces, preserving proportions and symbol-to-wordmark scale. A green logo is an identity
 exception to the single-bright-accent rule, not permission to add green decoration.
 
